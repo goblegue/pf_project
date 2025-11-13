@@ -1,25 +1,40 @@
-#ifndef BOARD.HPP
-#define BOARD.HPP
+#ifndef BOARD_HPP
+#define BOARD_HPP
 
-enum CandyType{
-    Empty,Blue,Orange,Red,Green,Yellow,Bomb
+const int MAX_ROWS{9};
+const int MAX_COLUMNS{9};
+
+enum CandyColor
+{
+    Red,
+    Yellow,
+    Green,
+    Blue,
+    Orange,
+    Bomb
 };
 
-enum SpecialCandy{
-    None,Wrapped,Striped
+enum SpecialCandy
+{
+    None,
+    Wrapped,
+    Striped
 };
 
-struct Candy{
-    CandyType CandyType;
-    SpecialCandy SpecialCandy;
-    int points;
+struct Candy
+{
+    CandyColor color;
+    SpecialCandy special;
     bool isMarkedDeletion;
 };
 
-const int maxRows{9};
-const int maxColumns{9};
+struct Board
+{
+    Candy candyGrid[MAX_ROWS][MAX_COLUMNS];
+};
 
-Candy Candies[maxRows][maxColumns]{};
+const int candypoints[5]{30, 30, 40, 50, 60};
 
-void initalizeGrid(Candy [maxRows][maxColumns]);
+void initalizeGrid(Board &gameBoard);
+
 #endif
