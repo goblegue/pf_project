@@ -3,11 +3,12 @@
 #include "renderer.hpp"
 #include "input.hpp"
 
+
 int main() {
     const int screenWidth = 545;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
-    SetTargetFPS(2);
+    SetTargetFPS(60);
 
     // --- Setup ---
     Board gameBoard;
@@ -16,8 +17,9 @@ int main() {
     Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
 
     SelectedCandy selection{}; // To track selected candy
+    swappedCandies swappedcandies{}; // To track swapped candies
 
-    int score{};
+    int score{};  
 
     // --- Main Game Loop ---
     while (!WindowShouldClose()) {
@@ -25,7 +27,8 @@ int main() {
         bool swapedOccure=handleMouseInput(gameBoard, selection, {renderer.gridOffset.x, renderer.gridOffset.y},TILE_SIZE);
         
         if(swapedOccure){
-            score+=handleMatchAndRefill(gameBoard);
+            swappedcandies=getSwappedCandies();
+            score+=handleMatchAndRefill(gameBoard,swappedcandies);
         }
         
         

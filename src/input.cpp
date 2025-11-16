@@ -1,7 +1,10 @@
 #include "input.hpp"
 #include "board.hpp"
 #include "raylib.h"
-static bool getPositionOfMouse (int &row,int &coloumn, Vector2 gridOffset, int TILE_SIZE)
+
+swappedCandies swappedcandies; // global variable to keep track of swapped candies
+
+ bool getPositionOfMouse (int &row,int &coloumn, Vector2 gridOffset, int TILE_SIZE)
 {
     Vector2 mouse_position=GetMousePosition();
     coloumn=(mouse_position.x - gridOffset.x)/TILE_SIZE;//  converts mouse position y to grid position
@@ -30,7 +33,6 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
 {
     int row1,coloumn1,row2,coloumn2;
 
-
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         if(!getPositionOfMouse(row1,coloumn1, gridOffSet, TILE_SIZE))
@@ -42,12 +44,18 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
             selection.row=row1;
             selection.coloumn=coloumn1;
             selection.isSelected=true;
+           
         }
         else
         {
             row2=selection.row;
             coloumn2=selection.coloumn;
             selection.isSelected=false;
+             //to keep track of first candy
+            swappedcandies.candy1row=selection.row;
+            swappedcandies.candy1column=selection.coloumn;
+            swappedcandies.candy2row=row1;
+            swappedcandies.candy2column=coloumn1;
             if(row1==row2 && coloumn1==coloumn2)
             {
                 return false;
@@ -60,3 +68,8 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
     }
     return false ;
 }
+
+swappedCandies getSwappedCandies(){
+    return swappedcandies;
+}
+
