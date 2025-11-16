@@ -2,7 +2,6 @@
 
 
 
-const int TILE_SIZE{50}; // Size of each candy tile in pixels
 const float TOP_MARGIN = 0.25f; // Top margin as a fraction of window height
 const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each tile
 
@@ -40,7 +39,7 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
             Rectangle sourceRec = renderer.candySourceRecs[candy.color];
             if(selection.isSelected && selection.row == row && selection.coloumn == col)
             {
-                DrawRectangle(position.x-TILE_BORDER_THICKNESS, position.y-TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, YELLOW);// highlight selected tile
+                DrawRectangle(position.x-TILE_BORDER_THICKNESS, position.y-TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, BEIGE);// highlight selected tile
             }
             else{
 

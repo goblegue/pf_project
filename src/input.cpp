@@ -1,12 +1,11 @@
 #include "input.hpp"
 #include "board.hpp"
 #include "raylib.h"
-static bool getPositionOfMouse (int &row,int &coloumn,int offsetX, int offsetY)
+static bool getPositionOfMouse (int &row,int &coloumn, Vector2 gridOffset, int TILE_SIZE)
 {
-    const int cell_size=50;
     Vector2 mouse_position=GetMousePosition();
-    coloumn=(mouse_position.x - offsetX)/cell_size;//  converts mouse position y to grid position
-    row=(mouse_position.y - offsetY)/cell_size;//  converts mouse position x to grid position
+    coloumn=(mouse_position.x - gridOffset.x)/TILE_SIZE;//  converts mouse position y to grid position
+    row=(mouse_position.y - gridOffset.y)/TILE_SIZE;//  converts mouse position x to grid position
     //  checks if the position is within the grid
     if(row<0 || row>=MAX_ROWS || coloumn<0 || coloumn>=MAX_COLUMNS)
     {
@@ -34,16 +33,16 @@ bool isAdjacent (int row1,int coloumn1,int row2,int coloumn2)
 }
 
 //  handles mouse input and swaps two candies
-void HandleMouseInput (Board &gameBoard,SelectedCandy &selection,int offsetX, int offsetY)
+bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet , int TILE_SIZE)
 {
     int row1,coloumn1,row2,coloumn2;
 
 
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        if(!getPositionOfMouse(row1,coloumn1, offsetX, offsetY))
+        if(!getPositionOfMouse(row1,coloumn1, gridOffSet, TILE_SIZE))
         {
-            return ;
+            return false ;
         }
         if(!selection.isSelected)
         {
@@ -58,14 +57,14 @@ void HandleMouseInput (Board &gameBoard,SelectedCandy &selection,int offsetX, in
             selection.isSelected=false;
             if(row1==row2 && coloumn1==coloumn2)
             {
-                return ;
+                return false;
             }
             if(isAdjacent(row1,coloumn1,row2,coloumn2))
             {
                 swapCandies(gameBoard,row1,coloumn1,row2,coloumn2);
-            
+                return true;
             }
         }
     }
-    return ;
+    return false ;
 }

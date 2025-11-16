@@ -17,6 +17,6 @@ void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2);
 bool isAdjacent (int row1,int coloumn1,int row2,int coloumn2);
 
 //function to handle mouse input
-void HandleMouseInput (Board &gameBoard,SelectedCandy &selection, int offsetX, int offsetY);
+bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet, int TILE_SIZE);
 
 #endif

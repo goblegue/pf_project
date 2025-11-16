@@ -37,4 +37,7 @@ const int candypoints[5]{30, 30, 40, 50, 60};
 
 void initalizeGrid(Board &gameBoard);
 
+int handleMatchAndRefill (Board &gameBoard);
+
+
 #endif

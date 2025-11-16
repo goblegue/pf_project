@@ -7,7 +7,7 @@ int main() {
     const int screenWidth = 545;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
-    SetTargetFPS(60);
+    SetTargetFPS(15);
 
     // --- Setup ---
     Board gameBoard;
@@ -17,10 +17,17 @@ int main() {
 
     SelectedCandy selection{}; // To track selected candy
 
+    int score{};
+
     // --- Main Game Loop ---
     while (!WindowShouldClose()) {
-        // Handle input here...
-        HandleMouseInput(gameBoard, selection, renderer.gridOffset.x, renderer.gridOffset.y);
+        // Handle inp6ut here...
+        bool swapedOccure=handleMouseInput(gameBoard, selection, {renderer.gridOffset.x, renderer.gridOffset.y},TILE_SIZE);
+        
+        if(swapedOccure){
+            score+=handleMatchAndRefill(gameBoard);
+        }
+        
         
         // --- Drawing ---
         BeginDrawing();
@@ -28,6 +35,7 @@ int main() {
         
         // Pass both the game state and renderer to the draw function
         drawBoard(renderer, gameBoard, selection);
+        DrawText(TextFormat("Score:,%i",score),50,50,20,YELLOW);
 
 
         EndDrawing();
