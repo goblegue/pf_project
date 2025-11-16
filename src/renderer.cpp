@@ -1,6 +1,6 @@
 #include "renderer.hpp"
 
-const int TILE_SIZE{50}; // Size of each candy tile in pixels
+const int TILE_SIZE{64}; // Size of each candy tile in pixels
 const float TOP_MARGIN = 0.25f; // Top margin as a fraction of window height
 const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each tile
 

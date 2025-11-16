@@ -3,8 +3,8 @@
 #include "renderer.hpp"
 
 int main() {
-    const int screenWidth = 545;
-    const int screenHeight = 650;
+    const int screenWidth = 640;
+    const int screenHeight = 850;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
     SetTargetFPS(60);
 
