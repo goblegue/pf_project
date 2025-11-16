@@ -14,13 +14,6 @@ static bool getPositionOfMouse (int &row,int &coloumn, Vector2 gridOffset, int T
     return true;
 }
 
-//  function to swap candies
-void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2)
-{
-    Candy temp = gameBoard.candyGrid[row1][coloumn1];
-    gameBoard.candyGrid[row1][coloumn1] = gameBoard.candyGrid[row2][coloumn2];
-    gameBoard.candyGrid[row2][coloumn2] = temp;
-}
 
 //  function to checking adjancy of two candies
 bool isAdjacent (int row1,int coloumn1,int row2,int coloumn2)
@@ -61,8 +54,7 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
             }
             if(isAdjacent(row1,coloumn1,row2,coloumn2))
             {
-                swapCandies(gameBoard,row1,coloumn1,row2,coloumn2);
-                return true;
+                return trySwapping(gameBoard,row1,coloumn1,row2,coloumn2);
             }
         }
     }

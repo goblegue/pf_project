@@ -1,7 +1,7 @@
 #include "utils/Random.hpp"
 #include "board.hpp"
 #include "input.hpp"
-
+// points associated with each candy color
 void initalizeGrid(Board &gameBoard)
 {
     Candy newCandy{};
@@ -22,9 +22,71 @@ void initalizeGrid(Board &gameBoard)
         }
     }
 }
+//function for swapping candies
+void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2)
+{
+    Candy temp = gameBoard.candyGrid[row1][coloumn1];
+    gameBoard.candyGrid[row1][coloumn1] = gameBoard.candyGrid[row2][coloumn2];
+    gameBoard.candyGrid[row2][coloumn2] = temp;
+}
+//function to check if candy is part of match
+bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
+{
+    CandyColor color = gameBoard.candyGrid[row][coloumn].color;
+    if(gameBoard.candyGrid[row][coloumn].isMarkedDeletion == true)
+    {
+        return false;
+    }
+    //checks horizontall match
+    int horizontalCount=1;
+    for(int i=coloumn-1; i>=0 && gameBoard.candyGrid[row][i].color==color; i--)
+    {
+        horizontalCount++;
+    }
+    for(int i=coloumn+1; i<MAX_COLUMNS && gameBoard.candyGrid[row][i].color==color; i++)
+    {
+        horizontalCount++;
+    }
+    if(horizontalCount>=3)
+    {
+        return true;
+    }
+    //checks vertical match
+    int verticalCount=1;
+    for(int i=row-1; i>=0 && gameBoard.candyGrid[i][coloumn].color==color; i--)
+    {
+        verticalCount++;
+    }
+    for(int i=row+1; i<MAX_ROWS && gameBoard.candyGrid[i][coloumn].color==color; i++)
+    {
+        verticalCount++;
+    }
+    if(verticalCount>=3)
+    {
+        return true;
+    }
+    return false;
+}
+// function to try swapping two candies
+bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2)
+{
+    swapCandies(gameBoard, row1, coloumn1, row2, coloumn2);
+    if(isPartOfMatch(gameBoard, row1, coloumn1) || isPartOfMatch(gameBoard, row2, coloumn2))
+    {
+        return true;
+    }
+    else
+    {
+        swapCandies(gameBoard, row1, coloumn1, row2, coloumn2); //swap back if no match
+        return false;
+    }
+}
+
+// function to find and mark matches on the board
 bool findAndMarkMatches (Board &gameBoard)
 {
     bool isFound{};
+    // checks horizontally 3 plain candies
     for (int i=0; i<MAX_ROWS; i++)
     {
         for(int j=0; j<MAX_COLUMNS-2; j++){
@@ -36,8 +98,10 @@ bool findAndMarkMatches (Board &gameBoard)
                 gameBoard.candyGrid[i][j+1].isMarkedDeletion=true;
                 gameBoard.candyGrid[i][j+2].isMarkedDeletion=true;
             }
+
         }
     }
+    //checks vertically 3 plain candies
     for (int i=0; i<MAX_ROWS-2; i++)
     {
         for(int j=0; j<MAX_COLUMNS; j++){
@@ -53,7 +117,7 @@ bool findAndMarkMatches (Board &gameBoard)
     }
     return isFound;
 }
-
+// apply gravity
 void applyGravity(Board &gameBoard){
     for(int i{0};i<MAX_COLUMNS;i++){
         int writeRow= MAX_ROWS-1;
@@ -66,7 +130,7 @@ void applyGravity(Board &gameBoard){
         }
     }
 }
-
+// refills board
 void refillBoard (Board &gameBoard)
 {
     for(int i=0; i<MAX_COLUMNS; i++)
@@ -81,6 +145,7 @@ void refillBoard (Board &gameBoard)
         }
     }
 }
+//handle matches and refills
 int handleMatchAndRefill (Board &gameBoard)
 {
     int score=0;

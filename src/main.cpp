@@ -7,7 +7,7 @@ int main() {
     const int screenWidth = 545;
     const int screenHeight = 650;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
-    SetTargetFPS(15);
+    SetTargetFPS(2);
 
     // --- Setup ---
     Board gameBoard;

@@ -39,5 +39,6 @@ void initalizeGrid(Board &gameBoard);
 
 int handleMatchAndRefill (Board &gameBoard);
 
+bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2);
 
 #endif
