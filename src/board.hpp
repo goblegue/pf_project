@@ -1,6 +1,8 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#include "raylib.h"
+
 const int MAX_ROWS{9};
 const int MAX_COLUMNS{9};
 
@@ -26,6 +28,7 @@ struct Candy
     CandyColor color;
     SpecialCandy special;
     bool isMarkedDeletion;
+    Vector2  currentPos;
 };
 
 struct Board
@@ -33,12 +36,18 @@ struct Board
     Candy candyGrid[MAX_ROWS][MAX_COLUMNS];
 };
 
+const int ANIMATION_SPEED = 8;
 const int candypoints[5]{30, 30, 40, 50, 60};
 
 void initializeGrid(Board &gameBoard);
 
-int handleMatchAndRefill (Board &gameBoard);
+
+
+bool animationBoard(Board& gameBoard, Vector2 gridOffset,int titleSize);
+
+int handleMatchAndRefill (Board &gameBoard,Vector2 gridOffset,int tileSize);
 
 bool trySwapping (Board &gameBoard, int row1, int column1,int row2, int column2);
+
 
 #endif

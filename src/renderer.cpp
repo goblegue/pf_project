@@ -33,9 +33,13 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
         for (int col = 0; col < MAX_COLUMNS; ++col)
         {
             Candy candy = gameBoard.candyGrid[row][col];
-            Vector2 position;
-            position.x = renderer.gridOffset.x + col * TILE_SIZE; 
-            position.y = renderer.gridOffset.y + row * TILE_SIZE;
+            if(candy.isMarkedDeletion){
+                continue;
+            }
+            Vector2 drawPos = candy.currentPos;
+            Vector2 position{};
+            position.x= position.x = renderer.gridOffset.x + col * TILE_SIZE;
+            position.y= position.y = renderer.gridOffset.y + row * TILE_SIZE;
             Rectangle sourceRec = renderer.candySourceRecs[candy.color];
             if(selection.isSelected && selection.row == row && selection.column == col)
             {
@@ -46,7 +50,7 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
                 DrawRectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, LIGHTGRAY);// tile background
             }
             DrawRectangleLinesEx({position.x - TILE_BORDER_THICKNESS, position.y - TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS}, TILE_BORDER_THICKNESS, Fade(DARKGRAY, 0.5f));// tile border
-            DrawTexturePro(renderer.candyTexture, sourceRec, {position.x, position.y, TILE_SIZE, TILE_SIZE}, {0, 0}, 0.0f, WHITE);// draw candy
+            DrawTexturePro(renderer.candyTexture, sourceRec, {drawPos.x, drawPos.y, TILE_SIZE, TILE_SIZE}, {0, 0}, 0.0f, WHITE);// draw candy
         }
     }   
 }
