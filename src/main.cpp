@@ -11,7 +11,7 @@ int main() {
 
     // --- Setup ---
     Board gameBoard;
-    initalizeGrid(gameBoard); // Initialize game logic
+    initializeGrid(gameBoard); // Initialize game logic
 
     Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
 

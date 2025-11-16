@@ -37,7 +37,7 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
             position.x = renderer.gridOffset.x + col * TILE_SIZE; 
             position.y = renderer.gridOffset.y + row * TILE_SIZE;
             Rectangle sourceRec = renderer.candySourceRecs[candy.color];
-            if(selection.isSelected && selection.row == row && selection.coloumn == col)
+            if(selection.isSelected && selection.row == row && selection.column == col)
             {
                 DrawRectangle(position.x-TILE_BORDER_THICKNESS, position.y-TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, BEIGE);// highlight selected tile
             }

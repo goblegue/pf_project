@@ -35,10 +35,10 @@ struct Board
 
 const int candypoints[5]{30, 30, 40, 50, 60};
 
-void initalizeGrid(Board &gameBoard);
+void initializeGrid(Board &gameBoard);
 
 int handleMatchAndRefill (Board &gameBoard);
 
-bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2);
+bool trySwapping (Board &gameBoard, int row1, int column1,int row2, int column2);
 
 #endif

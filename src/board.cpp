@@ -2,7 +2,7 @@
 #include "board.hpp"
 #include "input.hpp"
 // points associated with each candy color
-void initalizeGrid(Board &gameBoard)
+void initializeGrid(Board &gameBoard)
 {
     Candy newCandy{};
 
@@ -23,27 +23,27 @@ void initalizeGrid(Board &gameBoard)
     }
 }
 //function for swapping candies
-void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2)
+void swapCandies (Board &gameBoard,int row1,int column1,int row2,int column2)
 {
-    Candy temp = gameBoard.candyGrid[row1][coloumn1];
-    gameBoard.candyGrid[row1][coloumn1] = gameBoard.candyGrid[row2][coloumn2];
-    gameBoard.candyGrid[row2][coloumn2] = temp;
+    Candy temp = gameBoard.candyGrid[row1][column1];
+    gameBoard.candyGrid[row1][column1] = gameBoard.candyGrid[row2][column2];
+    gameBoard.candyGrid[row2][column2] = temp;
 }
 //function to check if candy is part of match
-bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
+bool isPartOfMatch (Board &gameBoard, int row, int column)
 {
-    CandyColor color = gameBoard.candyGrid[row][coloumn].color;
-    if(gameBoard.candyGrid[row][coloumn].isMarkedDeletion == true)
+    CandyColor color = gameBoard.candyGrid[row][column].color;
+    if(gameBoard.candyGrid[row][column].isMarkedDeletion == true)
     {
         return false;
     }
     //checks horizontall match
     int horizontalCount=1;
-    for(int i=coloumn-1; i>=0 && gameBoard.candyGrid[row][i].color==color; i--)
+    for(int i=column-1; i>=0 && gameBoard.candyGrid[row][i].color==color; i--)
     {
         horizontalCount++;
     }
-    for(int i=coloumn+1; i<MAX_COLUMNS && gameBoard.candyGrid[row][i].color==color; i++)
+    for(int i=column+1; i<MAX_COLUMNS && gameBoard.candyGrid[row][i].color==color; i++)
     {
         horizontalCount++;
     }
@@ -53,11 +53,11 @@ bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
     }
     //checks vertical match
     int verticalCount=1;
-    for(int i=row-1; i>=0 && gameBoard.candyGrid[i][coloumn].color==color; i--)
+    for(int i=row-1; i>=0 && gameBoard.candyGrid[i][column].color==color; i--)
     {
         verticalCount++;
     }
-    for(int i=row+1; i<MAX_ROWS && gameBoard.candyGrid[i][coloumn].color==color; i++)
+    for(int i=row+1; i<MAX_ROWS && gameBoard.candyGrid[i][column].color==color; i++)
     {
         verticalCount++;
     }
@@ -68,16 +68,16 @@ bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
     return false;
 }
 // function to try swapping two candies
-bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2)
+bool trySwapping (Board &gameBoard, int row1, int column1,int row2, int column2)
 {
-    swapCandies(gameBoard, row1, coloumn1, row2, coloumn2);
-    if(isPartOfMatch(gameBoard, row1, coloumn1) || isPartOfMatch(gameBoard, row2, coloumn2))
+    swapCandies(gameBoard, row1, column1, row2, column2);
+    if(isPartOfMatch(gameBoard, row1, column1) || isPartOfMatch(gameBoard, row2, column2))
     {
         return true;
     }
     else
     {
-        swapCandies(gameBoard, row1, coloumn1, row2, coloumn2); //swap back if no match
+        swapCandies(gameBoard, row1, column1, row2, column2); //swap back if no match
         return false;
     }
 }
