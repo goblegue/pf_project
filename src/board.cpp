@@ -5,7 +5,7 @@
 #include "raylib.h"
 
 // points associated with each candy color
-void initializeGrid(Board &gameBoard)
+void initializeGrid(Board &gameBoard,Vector2 gridOffset,const int tileSize)
 {
     Candy newCandy{};
 
@@ -21,21 +21,22 @@ void initializeGrid(Board &gameBoard)
                 candyColor = static_cast<CandyColor>(getRand(0, 4));
             } while ((j >= 2 && gameBoard.candyGrid[i][j - 2].color == candyColor && gameBoard.candyGrid[i][j - 1].color == candyColor) || (i >= 2 && gameBoard.candyGrid[i - 2][j].color == candyColor && gameBoard.candyGrid[i - 1][j].color == candyColor));
             newCandy.color = candyColor;
-            newCandy.currentPos = {0, 0};
+            newCandy.currentPos.y= gridOffset.y;
+            newCandy.currentPos.x= gridOffset.x + j * tileSize;
             gameBoard.candyGrid[i][j] = newCandy;
         }
     }
 }
 
 // Helper to calculate where a candy SHOULD be based on the grid
-Vector2 getTargetPos(int row, int col, Vector2 gridOffset, int tileSize)
+Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize)
 {
     return {
         gridOffset.x + col * tileSize,
         gridOffset.y + row * tileSize};
 }
 
-bool animationBoard(Board &gameBoard, Vector2 gridOffset, int tileSize)
+bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize)
 {
     bool isAnimating = false;
     for (int r = 0; r < MAX_ROWS; ++r)
@@ -249,7 +250,7 @@ static void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
 }
 
 // handle matches and refills
-int handleMatchAndRefill(Board &gameBoard, Vector2 gridOffset, int tileSize)
+int handleMatchAndRefill(Board &gameBoard, Vector2 gridOffset, const int tileSize)
 {
     int score = 0;
     while (findAndMarkMatches(gameBoard))

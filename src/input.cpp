@@ -1,7 +1,7 @@
 #include "input.hpp"
 #include "board.hpp"
 #include "raylib.h"
-static bool getPositionOfMouse (int &row,int &column, Vector2 gridOffset, int TILE_SIZE)
+static bool getPositionOfMouse (int &row,int &column, Vector2 gridOffset, const int TILE_SIZE)
 {
     Vector2 mouse_position=GetMousePosition();
     column=(mouse_position.x - gridOffset.x)/TILE_SIZE;//  converts mouse position y to grid position
@@ -26,7 +26,7 @@ bool isAdjacent (int row1,int column1,int row2,int column2)
 }
 
 //  handles mouse input and swaps two candies
-bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet , int TILE_SIZE)
+bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet , const int TILE_SIZE)
 {
     int row1,column1,row2,column2;
 

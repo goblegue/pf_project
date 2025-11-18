@@ -16,9 +16,9 @@ int main() {
 
     // --- Setup ---
     Board gameBoard;
-    initializeGrid(gameBoard); // Initialize game logic
-
+    
     Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
+    initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE); // Initialize game logic
 
     SelectedCandy selection{}; // To track selected candy
 

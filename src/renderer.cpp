@@ -38,8 +38,7 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
             }
             Vector2 drawPos = candy.currentPos;
             Vector2 position{};
-            position.x= position.x = renderer.gridOffset.x + col * TILE_SIZE;
-            position.y= position.y = renderer.gridOffset.y + row * TILE_SIZE;
+            position= getTargetPos(row, col, renderer.gridOffset, TILE_SIZE);
             Rectangle sourceRec = renderer.candySourceRecs[candy.color];
             if(selection.isSelected && selection.row == row && selection.column == col)
             {

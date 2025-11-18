@@ -16,6 +16,6 @@ struct SelectedCandy
 bool isAdjacent (int row1,int column1,int row2,int column2);
 
 //function to handle mouse input
-bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet, int TILE_SIZE);
+bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet, const int TILE_SIZE);
 
 #endif
