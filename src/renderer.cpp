@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 
-const int TILE_SIZE{64}; // Size of each candy tile in pixels
+
+
 const float TOP_MARGIN = 0.25f; // Top margin as a fraction of window height
 const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each tile
 
@@ -32,20 +33,23 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCa
         for (int col = 0; col < MAX_COLUMNS; ++col)
         {
             Candy candy = gameBoard.candyGrid[row][col];
-            Vector2 position;
-            position.x = renderer.gridOffset.x + col * TILE_SIZE; 
-            position.y = renderer.gridOffset.y + row * TILE_SIZE;
+            if(candy.isMarkedDeletion){
+                continue;
+            }
+            Vector2 drawPos = candy.currentPos;
+            Vector2 position{};
+            position= getTargetPos(row, col, renderer.gridOffset, TILE_SIZE);
             Rectangle sourceRec = renderer.candySourceRecs[candy.color];
-            if(selection.isSelected && selection.row == row && selection.coloumn == col)
+            if(selection.isSelected && selection.row == row && selection.column == col)
             {
-                DrawRectangle(position.x-TILE_BORDER_THICKNESS, position.y-TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, YELLOW);// highlight selected tile
+                DrawRectangle(position.x-TILE_BORDER_THICKNESS, position.y-TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, TILE_SIZE+2*TILE_BORDER_THICKNESS, BEIGE);// highlight selected tile
             }
             else{
 
                 DrawRectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, LIGHTGRAY);// tile background
             }
             DrawRectangleLinesEx({position.x - TILE_BORDER_THICKNESS, position.y - TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS}, TILE_BORDER_THICKNESS, Fade(DARKGRAY, 0.5f));// tile border
-            DrawTexturePro(renderer.candyTexture, sourceRec, {position.x, position.y, TILE_SIZE, TILE_SIZE}, {0, 0}, 0.0f, WHITE);// draw candy
+            DrawTexturePro(renderer.candyTexture, sourceRec, {drawPos.x, drawPos.y, TILE_SIZE, TILE_SIZE}, {0, 0}, 0.0f, WHITE);// draw candy
         }
     }   
 }

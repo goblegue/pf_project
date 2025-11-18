@@ -1,32 +1,24 @@
 #include "input.hpp"
 #include "board.hpp"
 #include "raylib.h"
-static bool getPositionOfMouse (int &row,int &coloumn,int offsetX, int offsetY)
+static bool getPositionOfMouse (int &row,int &column, Vector2 gridOffset, const int TILE_SIZE)
 {
-    const int cell_size=50;
     Vector2 mouse_position=GetMousePosition();
-    coloumn=(mouse_position.x - offsetX)/cell_size;//  converts mouse position y to grid position
-    row=(mouse_position.y - offsetY)/cell_size;//  converts mouse position x to grid position
+    column=(mouse_position.x - gridOffset.x)/TILE_SIZE;//  converts mouse position y to grid position
+    row=(mouse_position.y - gridOffset.y)/TILE_SIZE;//  converts mouse position x to grid position
     //  checks if the position is within the grid
-    if(row<0 || row>=MAX_ROWS || coloumn<0 || coloumn>=MAX_COLUMNS)
+    if(row<0 || row>=MAX_ROWS || column<0 || column>=MAX_COLUMNS)
     {
         return false;
     }
     return true;
 }
 
-//  function to swap candies
-void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2)
-{
-    Candy temp = gameBoard.candyGrid[row1][coloumn1];
-    gameBoard.candyGrid[row1][coloumn1] = gameBoard.candyGrid[row2][coloumn2];
-    gameBoard.candyGrid[row2][coloumn2] = temp;
-}
 
 //  function to checking adjancy of two candies
-bool isAdjacent (int row1,int coloumn1,int row2,int coloumn2)
+bool isAdjacent (int row1,int column1,int row2,int column2)
 {
-    if((row1==row2 && (coloumn1==coloumn2+1 || coloumn1==coloumn2-1)) || (coloumn1==coloumn2 && (row1==row2+1 || row1==row2-1)))
+    if((row1==row2 && (column1==column2+1 || column1==column2-1)) || (column1==column2 && (row1==row2+1 || row1==row2-1)))
     {
         return true;
     }
@@ -34,38 +26,37 @@ bool isAdjacent (int row1,int coloumn1,int row2,int coloumn2)
 }
 
 //  handles mouse input and swaps two candies
-void HandleMouseInput (Board &gameBoard,SelectedCandy &selection,int offsetX, int offsetY)
+bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet , const int TILE_SIZE)
 {
-    int row1,coloumn1,row2,coloumn2;
+    int row1,column1,row2,column2;
 
 
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        if(!getPositionOfMouse(row1,coloumn1, offsetX, offsetY))
+        if(!getPositionOfMouse(row1,column1, gridOffSet, TILE_SIZE))
         {
-            return ;
+            return false ;
         }
         if(!selection.isSelected)
         {
             selection.row=row1;
-            selection.coloumn=coloumn1;
+            selection.column=column1;
             selection.isSelected=true;
         }
         else
         {
             row2=selection.row;
-            coloumn2=selection.coloumn;
+            column2=selection.column;
             selection.isSelected=false;
-            if(row1==row2 && coloumn1==coloumn2)
+            if(row1==row2 && column1==column2)
             {
-                return ;
+                return false;
             }
-            if(isAdjacent(row1,coloumn1,row2,coloumn2))
+            if(isAdjacent(row1,column1,row2,column2))
             {
-                swapCandies(gameBoard,row1,coloumn1,row2,coloumn2);
-            
+                return trySwapping(gameBoard,row1,column1,row2,column2);
             }
         }
     }
-    return ;
+    return false ;
 }

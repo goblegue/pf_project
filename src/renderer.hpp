@@ -6,6 +6,7 @@
 #include "input.hpp"
 const int MAXCANDYCOLORS{6};//red,yellow,green,blue,orange,bomb
 
+const float TILE_SIZE{64};
 struct Renderer{
     Texture2D candyTexture; // candy sprite sheet
     Rectangle candySourceRecs[MAXCANDYCOLORS];
