@@ -22,6 +22,7 @@ int main() {
     initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE); // Initialize game logic
 
     SelectedCandy selection{}; // To track selected candy
+    swappedCandies swappedcandies{}; // To track swapped candies
 
     int score{};
     GameState gameState = Playing;

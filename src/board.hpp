@@ -1,7 +1,9 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
-
 #include "raylib.h"
+// Forward declaration to avoid circular dependency
+struct SelectedCandy;
+struct swappedCandies;
 
 const int MAX_ROWS{9};
 const int MAX_COLUMNS{9};
@@ -41,6 +43,7 @@ const int candypoints[5]{30, 30, 40, 50, 60};
 
 void initializeGrid(Board &gameBoard,Vector2 gridOffset,const int tileSize);
 
+int handleMatchAndRefill (Board &gameBoard,swappedCandies swap);
 
 
 bool animationBoard(Board& gameBoard, Vector2 gridOffset,const int tileSize);
