@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 #include "board.hpp"
-
+#include "input.hpp"
 const int MAXCANDYCOLORS{6};//red,yellow,green,blue,orange,bomb
 
 struct Renderer{
@@ -14,6 +14,6 @@ struct Renderer{
 
 Renderer initRenderer(int windowWidth, int windowHeight); 
 void unloadRenderer(Renderer &renderer);
-void drawBoard(const Renderer &renderer, const Board &gameBoard);
+void drawBoard(const Renderer &renderer, const Board &gameBoard,const SelectedCandy &selection);
 
 #endif

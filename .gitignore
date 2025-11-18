@@ -1,3 +1,10 @@
 .vscode/
 build_build.log
 build/
+Makefile
+build_run.log
+libstdc++-6.dll
+libgcc_s_dw2-1.dll
+main.code-workspace
+*.exe
+*.o
