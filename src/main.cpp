@@ -41,7 +41,7 @@ int main() {
 
             Vector2 gridOffset ={renderer.gridOffset.x, renderer.gridOffset.y};
             
-            // Handle inp6ut here...
+            // Handle input here...
             bool swapedOccure=handleMouseInput(gameBoard, selection,gridOffset,TILE_SIZE);
             
             if(swapedOccure){
@@ -56,7 +56,7 @@ int main() {
         
         // Pass both the game state and renderer to the draw function
         drawBoard(renderer, gameBoard, selection);
-        DrawText(TextFormat("Score:,%i",score),50,50,20,YELLOW);
+        DrawText(TextFormat("Score: %i",score),50,50,20,YELLOW);
 
 
         EndDrawing();

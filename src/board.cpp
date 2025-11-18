@@ -148,7 +148,11 @@ bool findAndMarkMatches(Board &gameBoard)
         {
 
             CandyColor color = gameBoard.candyGrid[i][j].color;
-            if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i][j + 1].color && color == gameBoard.candyGrid[i][j + 2].color)
+            if (!gameBoard.candyGrid[i][j].isMarkedDeletion &&
+                !gameBoard.candyGrid[i][j+1].isMarkedDeletion &&
+                !gameBoard.candyGrid[i][j+2].isMarkedDeletion &&
+                color == gameBoard.candyGrid[i][j + 1].color &&
+                color == gameBoard.candyGrid[i][j + 2].color)
             {
                 isFound = true;
                 gameBoard.candyGrid[i][j].isMarkedDeletion = true;
@@ -164,7 +168,9 @@ bool findAndMarkMatches(Board &gameBoard)
         {
 
             CandyColor color = gameBoard.candyGrid[i][j].color;
-            if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i + 1][j].color && color == gameBoard.candyGrid[i + 2][j].color)
+            if (!gameBoard.candyGrid[i][j].isMarkedDeletion && 
+                color == gameBoard.candyGrid[i + 1][j].color && 
+                color == gameBoard.candyGrid[i + 2][j].color)
             {
                 isFound = true;
                 gameBoard.candyGrid[i][j].isMarkedDeletion = true;
@@ -175,39 +181,9 @@ bool findAndMarkMatches(Board &gameBoard)
     }
     return isFound;
 }
-// // apply gravity
-// void applyGravity(Board &gameBoard)
-// {
-//     for (int i{0}; i < MAX_COLUMNS; i++)
-//     {
-//         int writeRow = MAX_ROWS - 1;
-//         for (int readRow = writeRow; readRow >= 0; readRow--)
-//         {
-//             if (gameBoard.candyGrid[readRow][i].isMarkedDeletion == false)
-//             {
-//                 swapCandies(gameBoard, readRow, i, writeRow, i);
-//                 writeRow--;
-//             }
-//         }
-//     }
-// }
-// // refills board
-// void refillBoard(Board &gameBoard)
-// {
-//     for (int i = 0; i < MAX_COLUMNS; i++)
-//     {
-//         for (int j = 0; j < MAX_ROWS; j++)
-//         {
-//             if (gameBoard.candyGrid[i][j].isMarkedDeletion == true)
-//             {
-//                 gameBoard.candyGrid[i][j].color = static_cast<CandyColor>(getRand(0, 4));
-//                 gameBoard.candyGrid[i][j].isMarkedDeletion = false;
-//             }
-//         }
-//     }
-// }
 
- void applyGravity(Board& board, Vector2 gridOffset, int tileSize) {
+
+void applyGravity(Board& board, Vector2 gridOffset, int tileSize) {
     for (int c = 0; c < MAX_COLUMNS; ++c) {
         int writeRow = MAX_ROWS - 1;
         for (int readRow = MAX_ROWS - 1; readRow >= 0; --readRow) {
@@ -232,7 +208,7 @@ bool findAndMarkMatches(Board &gameBoard)
     }
 }
 
-static void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
+void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
      for (int r = 0; r < MAX_ROWS; ++r) {
         for (int c = 0; c < MAX_COLUMNS; ++c) {
             if (board.candyGrid[r][c].isMarkedDeletion) {
