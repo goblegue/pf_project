@@ -44,9 +44,10 @@ int main() {
             
             // Handle input here...
             bool swapedOccure=handleMouseInput(gameBoard, selection,gridOffset,TILE_SIZE);
+            swappedcandies=getSwappedCandies();
             
             if(swapedOccure){
-                score+=handleMatchAndRefill(gameBoard, gridOffset, TILE_SIZE);
+                score+=handleMatchAndRefill(gameBoard, swappedcandies, gridOffset, TILE_SIZE);
             }
         }
         

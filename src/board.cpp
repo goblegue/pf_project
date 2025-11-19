@@ -565,7 +565,7 @@ void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
 }
 
 // handle matches and refills
-int handleMatchAndRefill(Board &gameBoard, Vector2 gridOffset, const int tileSize)
+int handleMatchAndRefill(Board &gameBoard, swappedCandies swappedcandies, Vector2 gridOffset, const int tileSize)
 {
     int score=0;
     while(findAndMarkFiveMatches(gameBoard)||findAndMarkFourMatches(gameBoard)||findAndMarkLorTshapeMatches(gameBoard,swappedcandies)||findAndMarkThreeMatches(gameBoard))

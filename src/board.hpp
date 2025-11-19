@@ -51,7 +51,7 @@ bool animationBoard(Board& gameBoard, Vector2 gridOffset,const int tileSize);
 Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize);
 
 
-int handleMatchAndRefill (Board &gameBoard,Vector2 gridOffset,const int tileSize);
+int handleMatchAndRefill (Board &gameBoard,swappedCandies swappedcandies,Vector2 gridOffset,const int tileSize);
 
 bool trySwapping (Board &gameBoard, int row1, int column1,int row2, int column2);
 
