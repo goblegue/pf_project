@@ -11,7 +11,7 @@ void initalizeGrid(Board &gameBoard)
         for (int j{0}; j < MAX_COLUMNS; j++)
         {
             newCandy.isMarkedDeletion = false;
-            newCandy.special = None;
+            newCandy.type = Plain;
             CandyColor candyColor;
             do
             {
@@ -193,264 +193,297 @@ bool findAndMarkFiveMatches (Board &gameBoard)
     }
     return isFound;
 }
-////function to check and mark L or T shape matches on board
+
+//function to check and mark L or T shape matches on board
 bool findAndMarkLorTshapeMatches (Board &gameBoard, swappedCandies swappedcandies)
 {
      bool isFound{};
-      CandyColor color1 = gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].color;
-       CandyColor color2 = gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].color;
+//       CandyColor color1 = gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].color;
+//        CandyColor color2 = gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].color;
        
-     if(gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion == true || gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion == true)
-    {
-        return false;
-    }
-   if(//check left T shape for first swapped candy
-       (swappedcandies.candy1row>=1 && swappedcandies.candy1row<=7 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
-    }
-    else if (//check right T shape for first swapped candy
-       (swappedcandies.candy1row>=1 && swappedcandies.candy1row<=7 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
-    }
-    else if (//check up T shape for first swapped candy
-        (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=1 && swappedcandies.candy1column<=7 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
-    else if (//check down T shape for first swapped candy
-        (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=1 && swappedcandies.candy1column<=7 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
+//      if(gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion == true || gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion == true)
+//     {
+//         return false;
+//     }
+//    if(//check left T shape for first swapped candy
+//        (swappedcandies.candy1row>=1 && swappedcandies.candy1row<=7 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
+//     }
+//     else if (//check right T shape for first swapped candy
+//        (swappedcandies.candy1row>=1 && swappedcandies.candy1row<=7 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
+//     }
+//     else if (//check up T shape for first swapped candy
+//         (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=1 && swappedcandies.candy1column<=7 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
+//     else if (//check down T shape for first swapped candy
+//         (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=1 && swappedcandies.candy1column<=7 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
 
 
-   //checks for second swapped candy
-    else if(//check left T shape for second swapped candy
-       (swappedcandies.candy2row>=1 && swappedcandies.candy2row<=7 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
-    }
-    else if (//check right T shape for second swapped candy
-       (swappedcandies.candy2row>=1 && swappedcandies.candy2row<=7 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
-    }
-    else if (//check up T shape for second swapped candy
-        (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=1 && swappedcandies.candy2column<=7 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
-    }
-    else if (//check down T shape for second swapped candy
-        (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=1 && swappedcandies.candy2column<=7 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
-    }
-    // checks for L shape for first swapped candy
-    else if (//check right upper L shape for first swapped candy
-        (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+-2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
-    else if (//check left upper L shape for first swapped candy
-        (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
-    else if (//check right lower L for first swapped candy
-        (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
-    else if(//check for left lower L for first swapped candy
-        (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
-    }
-        // checks for L shape for second swapped candy
-    else if (//check right upper L shape for second swapped candy
-        (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+-2][swappedcandies.candy2column].isMarkedDeletion=true;
-    }
-    else if (//check left upper L shape for second swapped candy
-        (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
-    }
-    else if (//check right lower L for second swapped candy
-        (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
-    }
-    else if(//check for left lower L for second swapped candy
-        (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
-      )
-    {
-        isFound=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
-        gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
+//    //checks for second swapped candy
+//     else if(//check left T shape for second swapped candy
+//        (swappedcandies.candy2row>=1 && swappedcandies.candy2row<=7 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
+//     }
+//     else if (//check right T shape for second swapped candy
+//        (swappedcandies.candy2row>=1 && swappedcandies.candy2row<=7 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
+//     }
+//     else if (//check up T shape for second swapped candy
+//         (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=1 && swappedcandies.candy2column<=7 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     else if (//check down T shape for second swapped candy
+//         (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=1 && swappedcandies.candy2column<=7 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     // checks for L shape for first swapped candy
+//     else if (//check right upper L shape for first swapped candy
+//         (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+-2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
+//     else if (//check left upper L shape for first swapped candy
+//         (swappedcandies.candy1row>=2 && swappedcandies.candy1row<=8 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row-2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
+//     else if (//check right lower L for first swapped candy
+//         (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=0 && swappedcandies.candy1column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column+2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
+//     else if(//check for left lower L for first swapped candy
+//         (swappedcandies.candy1row>=0 && swappedcandies.candy1row<=6 && swappedcandies.candy1column>=2 && swappedcandies.candy1column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].color==color1 &&
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].color==color1)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column-2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+1][swappedcandies.candy1column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy1row+2][swappedcandies.candy1column].isMarkedDeletion=true;
+//     }
+//         // checks for L shape for second swapped candy
+//     else if (//check right upper L shape for second swapped candy
+//         (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+-2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     else if (//check left upper L shape for second swapped candy
+//         (swappedcandies.candy2row>=2 && swappedcandies.candy2row<=8 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row-2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     else if (//check right lower L for second swapped candy
+//         (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=0 && swappedcandies.candy2column<=6 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column+2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     else if(//check for left lower L for second swapped candy
+//         (swappedcandies.candy2row>=0 && swappedcandies.candy2row<=6 && swappedcandies.candy2column>=2 && swappedcandies.candy2column<=8 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].color==color2 &&
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].color==color2)
+//       )
+//     {
+//         isFound=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-1].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column-2].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+1][swappedcandies.candy2column].isMarkedDeletion=true;
+//         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
+//     }
+//     return isFound;
+    for(int row{0}; row<MAX_ROWS; row++){
+        for(int col{0}; col<MAX_COLUMNS; col++){
+            if (gameBoard.candyGrid[row][col].isMarkedDeletion) continue;
+            bool isverticalMatch{checkVerticalMatch(gameBoard, row, col)};
+            bool ishorizontalMatch{checkHorizontalMatch(gameBoard, row, col)};
+            if(isverticalMatch && ishorizontalMatch){
+                isFound=true;
+                CandyColor color = gameBoard.candyGrid[row][col].color;
+                gameBoard.candyGrid[row][col].type = Wrapped;
+                
+                //mark left
+                for (int c = col -1; c >=0 && gameBoard.candyGrid[row][c].color == color; c--){
+                    gameBoard.candyGrid[row][c].isMarkedDeletion = true;
+                }
+                //mark right
+                for (int c = col +1; c < MAX_COLUMNS && gameBoard.candyGrid[row][c].color == color; c++){
+                    gameBoard.candyGrid[row][c].isMarkedDeletion = true;
+                }
+                //mark up
+                for (int r = row -1; r >=0 && gameBoard.candyGrid[r][col].color == color; r--){
+                    gameBoard.candyGrid[r][col].isMarkedDeletion = true;
+                }
+                //mark down
+                for (int r = row +1; r < MAX_ROWS && gameBoard.candyGrid[r][col].color == color; r++){
+                    gameBoard.candyGrid[r][col].isMarkedDeletion = true;
+                }
+
+            }
+
+        }
     }
     return isFound;
-       
+    
 }
 
 

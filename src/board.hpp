@@ -18,9 +18,9 @@ enum CandyColor
     Bomb
 };
 
-enum SpecialCandy
+enum CandyType
 {
-    None,
+    Plain,
     Wrapped,
     Striped
 };
@@ -28,7 +28,7 @@ enum SpecialCandy
 struct Candy
 {
     CandyColor color;
-    SpecialCandy special;
+    CandyType type;
     bool isMarkedDeletion;
 };
 
