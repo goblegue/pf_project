@@ -30,42 +30,38 @@ void swapCandies (Board &gameBoard,int row1,int coloumn1,int row2,int coloumn2)
     gameBoard.candyGrid[row2][coloumn2] = temp;
 }
 //function to check if candy is part of match
-bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
-{
+
+bool checkHorizontalMatch(Board &gameBoard, int row, int coloumn){
     CandyColor color = gameBoard.candyGrid[row][coloumn].color;
-    if(gameBoard.candyGrid[row][coloumn].isMarkedDeletion == true)
-    {
-        return false;
-    }
-    //checks horizontall match
-    int horizontalCount=1;
+    int count=1;
     for(int i=coloumn-1; i>=0 && gameBoard.candyGrid[row][i].color==color; i--)
     {
-        horizontalCount++;
+        count++;
     }
     for(int i=coloumn+1; i<MAX_COLUMNS && gameBoard.candyGrid[row][i].color==color; i++)
     {
-        horizontalCount++;
+        count++;
     }
-    if(horizontalCount>=3)
-    {
-        return true;
-    }
-    //checks vertical match
-    int verticalCount=1;
+    return count>=3;
+}
+
+bool checkVerticalMatch(Board &gameBoard, int row, int coloumn){
+    CandyColor color = gameBoard.candyGrid[row][coloumn].color;
+    int count=1;
     for(int i=row-1; i>=0 && gameBoard.candyGrid[i][coloumn].color==color; i--)
     {
-        verticalCount++;
+        count++;
     }
     for(int i=row+1; i<MAX_ROWS && gameBoard.candyGrid[i][coloumn].color==color; i++)
     {
-        verticalCount++;
+        count++;
     }
-    if(verticalCount>=3)
-    {
-        return true;
-    }
-    return false;
+    return count>=3;
+}
+
+bool isPartOfMatch (Board &gameBoard, int row, int coloumn)
+{
+    return checkHorizontalMatch(gameBoard, row, coloumn) || checkVerticalMatch(gameBoard, row, coloumn);
 }
 // function to try swapping two candies
 bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2)
@@ -198,7 +194,7 @@ bool findAndMarkFiveMatches (Board &gameBoard)
     return isFound;
 }
 ////function to check and mark L or T shape matches on board
-bool findAndMarkLorTshapeMatches (Board &gameBoard,swappedCandies swappedcandies)
+bool findAndMarkLorTshapeMatches (Board &gameBoard, swappedCandies swappedcandies)
 {
      bool isFound{};
       CandyColor color1 = gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].color;
@@ -454,6 +450,7 @@ bool findAndMarkLorTshapeMatches (Board &gameBoard,swappedCandies swappedcandies
         gameBoard.candyGrid[swappedcandies.candy2row+2][swappedcandies.candy2column].isMarkedDeletion=true;
     }
     return isFound;
+       
 }
 
 
