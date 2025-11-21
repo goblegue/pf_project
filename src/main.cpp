@@ -23,7 +23,7 @@ int main() {
 
     // --- Main Game Loop ---
     while (!WindowShouldClose()) {
-        // Handle inp6ut here...
+        // Handle input here...
         bool swapedOccure=handleMouseInput(gameBoard, selection, {renderer.gridOffset.x, renderer.gridOffset.y},TILE_SIZE);
         
         if(swapedOccure){

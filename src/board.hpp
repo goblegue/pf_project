@@ -45,5 +45,6 @@ void initalizeGrid(Board &gameBoard);
 int handleMatchAndRefill (Board &gameBoard,swappedCandies swap);
 
 bool trySwapping (Board &gameBoard, swappedCandies swappedcandies);
+bool testSwapping (Board &gameBoard, swappedCandies swappedcandies);
 
 #endif

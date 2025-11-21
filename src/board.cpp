@@ -29,7 +29,6 @@ void swapCandies(Board &gameBoard, int row1, int coloumn1, int row2, int coloumn
     gameBoard.candyGrid[row1][coloumn1] = gameBoard.candyGrid[row2][coloumn2];
     gameBoard.candyGrid[row2][coloumn2] = temp;
 }
-// function to check if candy is part of match
 
 bool checkHorizontalMatch(Board &gameBoard, int row, int coloumn)
 {
@@ -61,6 +60,7 @@ bool checkVerticalMatch(Board &gameBoard, int row, int coloumn)
     return count >= 3;
 }
 
+// function to check if candy is part of match
 bool isPartOfMatch(Board &gameBoard, int row, int coloumn)
 {
     return checkHorizontalMatch(gameBoard, row, coloumn) || checkVerticalMatch(gameBoard, row, coloumn);
@@ -79,6 +79,14 @@ bool trySwapping(Board &gameBoard, swappedCandies swappedcandies)
         swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column); // swap back if no match
         return false;
     }
+}
+
+// for testing purposes only
+bool testSwapping(Board &gameBoard, swappedCandies swappedcandies)
+
+{
+    swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
+    return true;
 }
 
 // function to find and mark three matches on the board
@@ -120,7 +128,7 @@ bool findAndMarkThreeMatches(Board &gameBoard)
     return isFound;
 }
 // function to check and mark four matches on board
-bool findAndMarkFourMatches(Board &gameBoard)
+bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
 {
     bool isFound{};
     // checks horizontally 4 plain candies
@@ -133,10 +141,19 @@ bool findAndMarkFourMatches(Board &gameBoard)
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i][j + 1].color && color == gameBoard.candyGrid[i][j + 2].color && color == gameBoard.candyGrid[i][j + 3].color)
             {
                 isFound = true;
-                gameBoard.candyGrid[i][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i][j + 1].isMarkedDeletion = true;
-                gameBoard.candyGrid[i][j + 2].isMarkedDeletion = true;
-                gameBoard.candyGrid[i][j + 3].isMarkedDeletion = true;
+
+                for (int k{0}; k < 5; k++)
+                {
+                    if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
+                    {
+
+                        gameBoard.candyGrid[i][j + k].type = (swappedcandies.orientation == Horizontal) ? Striped_horizontal : Striped_vertical;
+                    }
+                    else
+                    {
+                        gameBoard.candyGrid[i][j + k].isMarkedDeletion = true;
+                    }
+                }
             }
         }
     }
@@ -150,10 +167,17 @@ bool findAndMarkFourMatches(Board &gameBoard)
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i + 1][j].color && color == gameBoard.candyGrid[i + 2][j].color && color == gameBoard.candyGrid[i + 3][j].color)
             {
                 isFound = true;
-                gameBoard.candyGrid[i][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 1][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 2][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 3][j].isMarkedDeletion = true;
+                for (int k{0}; k < 5; k++)
+                {
+                    if ((i + k == swappedcandies.candy1row && j == swappedcandies.candy1column) || (i + k == swappedcandies.candy2row && j == swappedcandies.candy2column))
+                    {
+                        gameBoard.candyGrid[i + k][j].type = (swappedcandies.orientation == Horizontal) ? Striped_horizontal : Striped_vertical;
+                    }
+                    else
+                    {
+                        gameBoard.candyGrid[i + k][j].isMarkedDeletion = true;
+                    }
+                }
             }
         }
     }
@@ -173,11 +197,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i][j + 1].color && color == gameBoard.candyGrid[i][j + 2].color && color == gameBoard.candyGrid[i][j + 3].color && color == gameBoard.candyGrid[i][j + 4].color)
             {
                 isFound = true;
-                // gameBoard.candyGrid[i][j].isMarkedDeletion=true;
-                // gameBoard.candyGrid[i][j+1].isMarkedDeletion=true;
-                // gameBoard.candyGrid[i][j+2].isMarkedDeletion=true;
-                // gameBoard.candyGrid[i][j+3].isMarkedDeletion=true;
-                // gameBoard.candyGrid[i][j+4].isMarkedDeletion=true;
+
                 for (int k{0}; k < 5; k++)
                 {
                     if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
@@ -202,11 +222,18 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i + 1][j].color && color == gameBoard.candyGrid[i + 2][j].color && color == gameBoard.candyGrid[i + 3][j].color && color == gameBoard.candyGrid[i + 4][j].color)
             {
                 isFound = true;
-                gameBoard.candyGrid[i][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 1][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 2][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 3][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 4][j].isMarkedDeletion = true;
+
+                for (int k{0}; k < 5; k++)
+                {
+                    if ((i + k == swappedcandies.candy1row && j == swappedcandies.candy1column) || (i + k == swappedcandies.candy2row && j == swappedcandies.candy2column))
+                    {
+                        gameBoard.candyGrid[i + k][j].color = Bomb;
+                    }
+                    else
+                    {
+                        gameBoard.candyGrid[i + k][j].isMarkedDeletion = true;
+                    }
+                }
             }
         }
     }
@@ -544,7 +571,7 @@ void refillBoard(Board &gameBoard)
 int handleMatchAndRefill(Board &gameBoard, swappedCandies swappedcandies)
 {
     int score = 0;
-    while (findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard) || findAndMarkLorTshapeMatches(gameBoard, swappedcandies) || findAndMarkThreeMatches(gameBoard))
+    while (findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(gameBoard, swappedcandies) || findAndMarkThreeMatches(gameBoard))
     {
         for (int i = 0; i < MAX_ROWS; i++)
         {
