@@ -6,10 +6,16 @@
 #include "input.hpp"
 const int MAXCANDYCOLORS{6};//red,yellow,green,blue,orange,bomb
 
-const float TILE_SIZE{64};
+
+
+
+const int TILE_SIZE{64};
 struct Renderer{
     Texture2D candyTexture; // candy sprite sheet
-    Rectangle candySourceRecs[MAXCANDYCOLORS];
+    Rectangle plainCandySourceRecs[MAXCANDYCOLORS];
+    Rectangle wrappedCandySourceRecs[MAXCANDYCOLORS-1];
+    Rectangle horiStripedCandySourceRecs[MAXCANDYCOLORS-1];
+    Rectangle vertStripedCandySourceRecs[MAXCANDYCOLORS-1];
     Vector2 gridOffset; // distance from top-left corner to grid start
 };
 

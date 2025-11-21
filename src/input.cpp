@@ -56,13 +56,14 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
             swappedcandies.candy1column=selection.column;
             swappedcandies.candy2row=row1;
             swappedcandies.candy2column=column1;
+            swappedcandies.orientation = (row1 == row2) ? Horizontal : Vertical;
             if(row1==row2 && column1==column2)
             {
                 return false;
             }
             if(isAdjacent(row1,column1,row2,column2))
             {
-                return trySwapping(gameBoard,row1,column1,row2,column2);
+                return trySwapping(gameBoard,swappedcandies);
             }
         }
     }

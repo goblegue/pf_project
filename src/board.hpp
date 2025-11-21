@@ -18,17 +18,18 @@ enum CandyColor
     Bomb
 };
 
-enum SpecialCandy
+enum CandyType
 {
-    None,
+    Plain,
     Wrapped,
-    Striped
+    Striped_horizontal,
+    Striped_vertical
 };
 
 struct Candy
 {
     CandyColor color;
-    SpecialCandy special;
+    CandyType type;
     bool isMarkedDeletion;
     Vector2  currentPos;
 };
@@ -53,7 +54,9 @@ Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize);
 
 int handleMatchAndRefill (Board &gameBoard,swappedCandies swappedcandies,Vector2 gridOffset,const int tileSize);
 
-bool trySwapping (Board &gameBoard, int row1, int column1,int row2, int column2);
 
+
+bool trySwapping (Board &gameBoard, swappedCandies swappedcandies);
+bool testSwapping (Board &gameBoard, swappedCandies swappedcandies);
 
 #endif
