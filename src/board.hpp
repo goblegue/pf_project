@@ -22,7 +22,8 @@ enum CandyType
 {
     Plain,
     Wrapped,
-    Striped
+    Striped_horizontal,
+    Striped_vertical
 };
 
 struct Candy
@@ -43,6 +44,6 @@ void initalizeGrid(Board &gameBoard);
 
 int handleMatchAndRefill (Board &gameBoard,swappedCandies swap);
 
-bool trySwapping (Board &gameBoard, int row1, int coloumn1,int row2, int coloumn2);
+bool trySwapping (Board &gameBoard, swappedCandies swappedcandies);
 
 #endif
