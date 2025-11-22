@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include "board.hpp"
 #include "input.hpp"
+#include "colors/customColourPalette.hpp"
+
 const int MAXCANDYCOLORS{6};//red,yellow,green,blue,orange,bomb
 
 

@@ -24,18 +24,17 @@ Renderer initRenderer(int windowWidth, int windowHeight)
     renderer.wrappedCandySourceRecs[Blue] = {745.0f, 0.0f, 100.0f, 90.0f};      // location of blue wrapped candy in sprite sheet
 
     // horizontal striped candy source rectangles
-    renderer.horiStripedCandySourceRecs[Red] = {200.0f, 740.0f, 100.0f, 100.0f};    // location of red horizontally striped candy in sprite sheet
+    renderer.horiStripedCandySourceRecs[Red] = {200.0f, 740.0f, 100.0f, 100.0f};   // location of red horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Orange] = {380.0f, 740.0f, 90.0f, 100.0f}; // location of orange horizontally striped candy in sprite sheet
-    renderer.horiStripedCandySourceRecs[Yellow] = {690.0f, 655.0f, 85.0f, 90.0f};   // location of yellow horizontally striped candy in sprite sheet
-    renderer.horiStripedCandySourceRecs[Green] = {295.0f, 740.0f, 100.0f, 100.0f};  // location of green horizontally striped candy in sprite sheet
-    renderer.horiStripedCandySourceRecs[Blue] = {300.0f, 635.0f, 100.0f, 100.0f};   // location of blue horizontally striped candy in sprite sheet
+    renderer.horiStripedCandySourceRecs[Yellow] = {690.0f, 655.0f, 85.0f, 90.0f};  // location of yellow horizontally striped candy in sprite sheet
+    renderer.horiStripedCandySourceRecs[Green] = {295.0f, 740.0f, 100.0f, 100.0f}; // location of green horizontally striped candy in sprite sheet
+    renderer.horiStripedCandySourceRecs[Blue] = {300.0f, 635.0f, 100.0f, 100.0f};  // location of blue horizontally striped candy in sprite sheet
 
-    renderer.vertStripedCandySourceRecs[Red] = {400.0f, 640.0f, 100.0f, 100.0f};    // location of red vertically striped candy in sprite sheet
-    renderer.vertStripedCandySourceRecs[Orange] = {575.0f, 740.0f, 85.0f, 100.0f};  // location of orange vertically striped candy in sprite sheet
-    renderer.vertStripedCandySourceRecs[Yellow] = {837.0f, 95.0f, 85.0f, 90.0f};    // location of yellow vertically striped candy in sprite sheet
-    renderer.vertStripedCandySourceRecs[Green] = {95.0f, 740.0f, 100.0f, 100.0f};    // location of green vertically striped candy in sprite sheet
-    renderer.vertStripedCandySourceRecs[Blue] = {200.0f, 640.0f, 100.0f, 100.0f};     // location of blue vertically striped candy in sprite sheet
-        
+    renderer.vertStripedCandySourceRecs[Red] = {400.0f, 640.0f, 100.0f, 100.0f};   // location of red vertically striped candy in sprite sheet
+    renderer.vertStripedCandySourceRecs[Orange] = {575.0f, 740.0f, 85.0f, 100.0f}; // location of orange vertically striped candy in sprite sheet
+    renderer.vertStripedCandySourceRecs[Yellow] = {837.0f, 95.0f, 85.0f, 90.0f};   // location of yellow vertically striped candy in sprite sheet
+    renderer.vertStripedCandySourceRecs[Green] = {95.0f, 740.0f, 100.0f, 100.0f};  // location of green vertically striped candy in sprite sheet
+    renderer.vertStripedCandySourceRecs[Blue] = {200.0f, 640.0f, 100.0f, 100.0f};  // location of blue vertically striped candy in sprite sheet
 
     renderer.gridOffset.x = (windowWidth - (MAX_COLUMNS * TILE_SIZE)) / 2.0f; // center the grid horizontally
     renderer.gridOffset.y = windowHeight * TOP_MARGIN;                        // set the distance from top to grid start
@@ -54,40 +53,40 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard, const SelectedC
         for (int col = 0; col < MAX_COLUMNS; ++col)
         {
             Candy candy = gameBoard.candyGrid[row][col];
-            if(candy.isMarkedDeletion){
-                continue;
-            }
             Vector2 drawPos = candy.currentPos;
-            Vector2 position{};
-            position= getTargetPos(row, col, renderer.gridOffset, TILE_SIZE);
-            Rectangle sourceRec;
-            switch (candy.type)
-            {
-            case Wrapped:
-                sourceRec = renderer.wrappedCandySourceRecs[candy.color];
-                break;
-            case Striped_horizontal:
-                sourceRec = renderer.horiStripedCandySourceRecs[candy.color];
-                break;
-            case Striped_vertical:
-                sourceRec = renderer.vertStripedCandySourceRecs[candy.color];
-                break;    
-            default:
-                sourceRec = renderer.plainCandySourceRecs[candy.color];
-                break;
-            }
+
+            Vector2 position = getTargetPos(row, col, renderer.gridOffset, TILE_SIZE);
+
+            DrawRectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, CC_GRID_BG);
+            DrawRectangleLines(position.x, position.y, TILE_SIZE, TILE_SIZE, Fade(WHITE, 0.2f));
 
             if (selection.isSelected && selection.row == row && selection.column == col)
             {
-                DrawRectangle(position.x - TILE_BORDER_THICKNESS, position.y - TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS, BEIGE); // highlight selected tile
+                // Make it a glowing white box instead of solid Yellow
+                DrawRectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, CC_SELECTION);
+                DrawRectangleLinesEx({position.x, position.y, (float)TILE_SIZE, (float)TILE_SIZE}, 3.0f, WHITE);
             }
-            else
-            {
 
-                DrawRectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, LIGHTGRAY); // tile background
+            if (!candy.isMarkedDeletion)
+            {
+                Rectangle sourceRec;
+                switch (candy.type)
+                {
+                case Wrapped:
+                    sourceRec = renderer.wrappedCandySourceRecs[candy.color];
+                    break;
+                case Striped_horizontal:
+                    sourceRec = renderer.horiStripedCandySourceRecs[candy.color];
+                    break;
+                case Striped_vertical:
+                    sourceRec = renderer.vertStripedCandySourceRecs[candy.color];
+                    break;
+                default:
+                    sourceRec = renderer.plainCandySourceRecs[candy.color];
+                    break;
+                }
+                DrawTexturePro(renderer.candyTexture, sourceRec, {drawPos.x, drawPos.y, (float)TILE_SIZE, (float)TILE_SIZE}, {0, 0}, 0.0f, WHITE);
             }
-            DrawRectangleLinesEx({position.x - TILE_BORDER_THICKNESS, position.y - TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS, TILE_SIZE + 2 * TILE_BORDER_THICKNESS}, TILE_BORDER_THICKNESS, Fade(DARKGRAY, 0.5f)); // tile border
-            DrawTexturePro(renderer.candyTexture, sourceRec, {drawPos.x, drawPos.y, TILE_SIZE, TILE_SIZE}, {0, 0}, 0.0f, WHITE);                                                                                                     // draw candy
         }
     }
 }
