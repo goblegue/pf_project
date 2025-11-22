@@ -1,0 +1,7 @@
+#include "raylib.h"
+
+const Color CANDYPINK{249,144,196, 255};
+const Color GUM_COLOR{255,190,222, 255};
+const Color LITE_PURPLE{199,140,255, 255};
+const Color DARK_PURPLE{168,138,245, 255};
+const Color CYAN{215,240,244, 255};

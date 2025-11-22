@@ -8,3 +8,4 @@ libgcc_s_dw2-1.dll
 main.code-workspace
 *.exe
 *.o
+savefile.txt
