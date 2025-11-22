@@ -68,7 +68,8 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies);
 bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies);
 bool findAndMarkThreeMatches(Board &gameBoard);
 
-void refillBoard(Board& board, Vector2 gridOffset, int tileSize);
-void applyGravity(Board& board, Vector2 gridOffset, int tileSize);
+void refillBoard(Board& gameboard, Vector2 gridOffset, int tileSize);
+void applyGravity(Board& gameboard, Vector2 gridOffset, int tileSize);
 
+void handleSpecialInteraction(Board &gameBoard, swappedCandies swappedcandies);
 #endif

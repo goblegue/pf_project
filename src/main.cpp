@@ -114,7 +114,7 @@ int main()
         BeginDrawing();
         ClearBackground(DARKBROWN);
 
-        // Pass both the game state and renderer to the draw function
+        // Pass both the game grid and renderer to the draw function
         drawBoard(renderer, gameBoard, selection);
         DrawText(TextFormat("Score: %i", score), 50, 50, 20, YELLOW);
 

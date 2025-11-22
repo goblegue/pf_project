@@ -4,8 +4,10 @@
 #include "input.hpp"
 #include "raylib.h"
 
+void triggerCandyEffect(Board &gameboard, int row, int col);
+
 // points associated with each candy color
-void initializeGrid(Board &gameBoard,Vector2 gridOffset,const int tileSize)
+void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize)
 {
     Candy newCandy{};
 
@@ -21,8 +23,8 @@ void initializeGrid(Board &gameBoard,Vector2 gridOffset,const int tileSize)
                 candyColor = static_cast<CandyColor>(getRand(0, 4));
             } while ((j >= 2 && gameBoard.candyGrid[i][j - 2].color == candyColor && gameBoard.candyGrid[i][j - 1].color == candyColor) || (i >= 2 && gameBoard.candyGrid[i - 2][j].color == candyColor && gameBoard.candyGrid[i - 1][j].color == candyColor));
             newCandy.color = candyColor;
-            newCandy.currentPos.y= gridOffset.y;
-            newCandy.currentPos.x= gridOffset.x + j * tileSize;
+            newCandy.currentPos.y = gridOffset.y;
+            newCandy.currentPos.x = gridOffset.x + j * tileSize;
             gameBoard.candyGrid[i][j] = newCandy;
         }
     }
@@ -68,8 +70,6 @@ bool animatBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, float
     }
     return isAnimating;
 }
-
-
 
 // function for swapping candies
 void swapCandies(Board &gameBoard, int row1, int column1, int row2, int column2)
@@ -123,8 +123,6 @@ bool isPartOfMatch(Board &gameBoard, int row, int coloumn)
     return checkHorizontalMatch(gameBoard, row, coloumn) || checkVerticalMatch(gameBoard, row, coloumn);
 }
 
-
-
 // for testing purposes only
 bool testSwapping(Board &gameBoard, swappedCandies swappedcandies)
 
@@ -145,8 +143,8 @@ bool findAndMarkThreeMatches(Board &gameBoard)
 
             CandyColor color = gameBoard.candyGrid[i][j].color;
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion &&
-                !gameBoard.candyGrid[i][j+1].isMarkedDeletion &&
-                !gameBoard.candyGrid[i][j+2].isMarkedDeletion &&
+                !gameBoard.candyGrid[i][j + 1].isMarkedDeletion &&
+                !gameBoard.candyGrid[i][j + 2].isMarkedDeletion &&
                 color == gameBoard.candyGrid[i][j + 1].color &&
                 color == gameBoard.candyGrid[i][j + 2].color)
             {
@@ -164,8 +162,8 @@ bool findAndMarkThreeMatches(Board &gameBoard)
         {
 
             CandyColor color = gameBoard.candyGrid[i][j].color;
-            if (!gameBoard.candyGrid[i][j].isMarkedDeletion && 
-                color == gameBoard.candyGrid[i + 1][j].color && 
+            if (!gameBoard.candyGrid[i][j].isMarkedDeletion &&
+                color == gameBoard.candyGrid[i + 1][j].color &&
                 color == gameBoard.candyGrid[i + 2][j].color)
             {
                 isFound = true;
@@ -334,16 +332,19 @@ bool findAndMarkLorTshapeMatches(Board &gameBoard)
     return isFound;
 }
 
-
-
-void applyGravity(Board& board, Vector2 gridOffset, int tileSize) {
-    for (int c = 0; c < MAX_COLUMNS; ++c) {
+void applyGravity(Board &board, Vector2 gridOffset, int tileSize)
+{
+    for (int c = 0; c < MAX_COLUMNS; ++c)
+    {
         int writeRow = MAX_ROWS - 1;
-        for (int readRow = MAX_ROWS - 1; readRow >= 0; --readRow) {
-            if (board.candyGrid[readRow][c].isMarkedDeletion == false) {
+        for (int readRow = MAX_ROWS - 1; readRow >= 0; --readRow)
+        {
+            if (board.candyGrid[readRow][c].isMarkedDeletion == false)
+            {
 
                 // If we are moving a candy...
-                if (writeRow != readRow) {
+                if (writeRow != readRow)
+                {
                     // Copy data down to the write slot
                     board.candyGrid[writeRow][c] = board.candyGrid[readRow][c];
 
@@ -357,14 +358,17 @@ void applyGravity(Board& board, Vector2 gridOffset, int tileSize) {
                 writeRow--;
             }
         }
-
     }
 }
 
-void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
-     for (int r = 0; r < MAX_ROWS; ++r) {
-        for (int c = 0; c < MAX_COLUMNS; ++c) {
-            if (board.candyGrid[r][c].isMarkedDeletion) {
+void refillBoard(Board &board, Vector2 gridOffset, int tileSize)
+{
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+            if (board.candyGrid[r][c].isMarkedDeletion)
+            {
                 // Create new candy
                 board.candyGrid[r][c].color = static_cast<CandyColor>(getRand(0, 4));
                 board.candyGrid[r][c].isMarkedDeletion = false;
@@ -372,7 +376,7 @@ void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
 
                 // KEY: Spawn it ABOVE the board so it can animate into place
                 Vector2 target = getTargetPos(r, c, gridOffset, tileSize);
-                board.candyGrid[r][c].currentPos = { target.x, GetScreenHeight()*0.2f }; // Start way above
+                board.candyGrid[r][c].currentPos = {target.x, GetScreenHeight() * 0.2f}; // Start way above
             }
         }
     }
@@ -386,13 +390,90 @@ int getScoreFromMarkedCandies(const Board &gameBoard)
         for (int j = 0; j < MAX_COLUMNS; j++)
         {
             // Only count candies that are about to be removed
-            if (gameBoard.candyGrid[i][j].isMarkedDeletion) 
+            if (gameBoard.candyGrid[i][j].isMarkedDeletion)
             {
                 // Add points based on color
                 currentMoveScore += candypoints[gameBoard.candyGrid[i][j].color];
-                
             }
         }
     }
     return currentMoveScore;
 }
+
+// for horizontal striped candy effect
+void destroyRow(Board &gameBoard, int row)
+{
+    for (int col = 0; col < MAX_COLUMNS; ++col)
+    {
+        triggerCandyEffect(gameBoard, row, col);
+    }
+}
+
+// for vertical striped candy effect
+void destroyColumn(Board &gameBoard, int column)
+{
+    for (int row = 0; row < MAX_ROWS; ++row)
+    {
+        triggerCandyEffect(gameBoard, row, column);
+    }
+}
+
+// for wrapped candy effect
+void destroyArea(Board &gameBoard, int centerRow, int centerCol, int squareLenght)
+{
+    int radius = (squareLenght - 1) / 2;
+
+    for (int r = centerRow - radius; r <= centerRow + radius; ++r)
+    {
+        for (int c = centerCol - radius; c <= centerCol + radius; ++c)
+        {
+            if (r >= 0 && r < MAX_ROWS && c >= 0 && c < MAX_COLUMNS)
+            {
+                triggerCandyEffect(gameBoard, r, c);
+            }
+        }
+    }
+}
+
+// candy bomb
+void destroyColor(Board &gameBoard, CandyColor color)
+{
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+            if (gameBoard.candyGrid[r][c].color == color)
+            {
+                triggerCandyEffect(gameBoard, r, c);
+            }
+        }
+    }
+}
+
+void triggerCandyEffect(Board &gameboard, int row, int col)
+{
+    if (row < 0 || row >= MAX_ROWS || col < 0 || col >= MAX_COLUMNS)
+        return;
+    if (gameboard.candyGrid[row][col].isMarkedDeletion)
+        return;
+    gameboard.candyGrid[row][col].isMarkedDeletion = true;
+    switch (gameboard.candyGrid[row][col].type)
+    {
+    case Striped_horizontal:
+        destroyRow(gameboard, row);
+        break;
+    case Striped_vertical:
+        destroyColumn(gameboard, col);
+        break;
+    case Wrapped:
+        destroyArea(gameboard, row, col, 3);
+        break;
+    case Bomb:
+        destroyColor(gameboard, static_cast<CandyColor>(getRand(0, 4)));
+        break;
+    default:
+        break;
+    }
+}
+
+
