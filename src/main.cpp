@@ -4,7 +4,7 @@
 #include "board.hpp"
 #include "input.hpp"
 
-#define Prod ;
+#define Prod
 
 enum GameState
 {

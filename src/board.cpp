@@ -476,6 +476,12 @@ void triggerCandyEffect(Board &gameboard, int row, int col)
     }
 }
 
+void destroyOriginalSpecial(Board &gameboard,swappedCandies swappedcandies){
+    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
+    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+
+}
+
 // bomb candy interactions
 
 void handleBombBomb(Board &gameboard)
@@ -510,8 +516,7 @@ void handleBombStriped(Board &gameboard,swappedCandies swappedcandies){
     destroyColor(gameboard, targetColor);
 
     //destroy the original 2
-    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
-    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+    destroyOriginalSpecial(gameboard, swappedcandies);
 }
 
 void handleBombWrapped(Board &gameboard,swappedCandies swappedcandies){
@@ -534,8 +539,7 @@ void handleBombWrapped(Board &gameboard,swappedCandies swappedcandies){
     destroyColor(gameboard, targetColor);
 
     //destroy the original 2
-    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
-    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+    destroyOriginalSpecial(gameboard, swappedcandies);
 
 }
 
@@ -548,8 +552,36 @@ void handleBombPlain(Board &gameboard,swappedCandies swappedcandies){
     destroyColor(gameboard, targetColor);
 
     //destroy the original 2
-    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
-    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+    destroyOriginalSpecial(gameboard, swappedcandies);
+}
+
+void handleStripedAndStriped(Board &gameboard, swappedCandies swappedcandies){
+    destroyRow(gameboard, swappedcandies.candy2row); // destroy row of destination candy 
+    destroyColumn(gameboard, swappedcandies.candy2column); // destroy column of destination candy
+
+    destroyOriginalSpecial(gameboard, swappedcandies);
+}
+
+void handleStripedAndWrapped(Board &gameboard, swappedCandies swappedcandies){
+
+    // destroy 3 rows 
+    destroyRow(gameboard, swappedcandies.candy2row);
+    destroyRow(gameboard, swappedcandies.candy2row - 1);
+    destroyRow(gameboard, swappedcandies.candy2row + 1);
+
+    // destroy 3 columns
+    destroyColumn(gameboard, swappedcandies.candy2column);
+    destroyColumn(gameboard, swappedcandies.candy2column - 1);
+    destroyColumn(gameboard, swappedcandies.candy2column + 1);
+
+    destroyOriginalSpecial(gameboard, swappedcandies);
+}
+
+void handleWrappedAndWrapped(Board &gameboard, swappedCandies swappedcandies){
+
+    destroyArea(gameboard, swappedcandies.candy2row, swappedcandies.candy2column, 5);
+
+    destroyOriginalSpecial(gameboard, swappedcandies);
 }
 
 bool handleSpecialInteraction(Board &gameBoard, swappedCandies swappedcandies)
@@ -580,6 +612,22 @@ bool handleSpecialInteraction(Board &gameBoard, swappedCandies swappedcandies)
             return true;
         }
     }
+
+    // COMBO INTERACTIONS
+    if((candy1.type==Striped_horizontal || candy1.type==Striped_vertical) && (candy2.type==Striped_horizontal || candy2.type==Striped_vertical)){
+        handleStripedAndStriped(gameBoard,swappedcandies);
+        return true;
+    }
+    if((candy1.type==Wrapped && (candy2.type==Striped_horizontal || candy2.type==Striped_vertical)) || (candy2.type==Wrapped && (candy1.type==Striped_horizontal || candy1.type==Striped_vertical))){
+        handleStripedAndWrapped(gameBoard,swappedcandies);
+        return true;
+    }
+    if(candy1.type==Wrapped && candy2.type==Wrapped){
+        handleWrappedAndWrapped(gameBoard,swappedcandies);
+        return true;
+    }
+    
+    // no special candy interaction 
     return false;
 }
 
