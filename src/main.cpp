@@ -4,6 +4,8 @@
 #include "board.hpp"
 #include "input.hpp"
 
+#define Prod ;
+
 enum GameState
 {
     INPUT,
@@ -63,10 +65,23 @@ int main()
         case SWAPPING:
             if (!isMoving)
             {
-                if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
+                if (handleSpecialInteraction(gameBoard, swappedcandies))
                 {
                     currentState = PROCESSING_MATCHES;
                 }
+#ifdef Prod
+                else if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
+                {
+                    currentState = PROCESSING_MATCHES;
+                }
+#endif
+
+#ifdef Testing
+                else if (true) // Always true for testing purposes
+                {
+                    currentState = PROCESSING_MATCHES;
+                }
+#endif
                 else
                 {
                     swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
@@ -82,8 +97,9 @@ int main()
             break;
         case PROCESSING_MATCHES:
         {
+            bool deletedPresent = isDeletedPresent(gameBoard);
             bool matchFound = findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(gameBoard) || findAndMarkThreeMatches(gameBoard);
-            if (matchFound)
+            if (matchFound || deletedPresent)
             {
                 score += getScoreFromMarkedCandies(gameBoard);
                 applyGravity(gameBoard, renderer.gridOffset, TILE_SIZE);

@@ -149,9 +149,9 @@ bool findAndMarkThreeMatches(Board &gameBoard)
                 color == gameBoard.candyGrid[i][j + 2].color)
             {
                 isFound = true;
-                gameBoard.candyGrid[i][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i][j + 1].isMarkedDeletion = true;
-                gameBoard.candyGrid[i][j + 2].isMarkedDeletion = true;
+                triggerCandyEffect(gameBoard, i ,j);
+                triggerCandyEffect(gameBoard, i ,j + 1);
+                triggerCandyEffect(gameBoard, i ,j + 2);
             }
         }
     }
@@ -167,9 +167,9 @@ bool findAndMarkThreeMatches(Board &gameBoard)
                 color == gameBoard.candyGrid[i + 2][j].color)
             {
                 isFound = true;
-                gameBoard.candyGrid[i][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 1][j].isMarkedDeletion = true;
-                gameBoard.candyGrid[i + 2][j].isMarkedDeletion = true;
+                triggerCandyEffect(gameBoard, i ,j);
+                triggerCandyEffect(gameBoard, i + 1 ,j);
+                triggerCandyEffect(gameBoard, i + 2 ,j);
             }
         }
     }
@@ -199,7 +199,7 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
                     }
                     else
                     {
-                        gameBoard.candyGrid[i][j + k].isMarkedDeletion = true;
+                        triggerCandyEffect(gameBoard, i ,j + k);
                     }
                 }
             }
@@ -223,7 +223,7 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
                     }
                     else
                     {
-                        gameBoard.candyGrid[i + k][j].isMarkedDeletion = true;
+                        triggerCandyEffect(gameBoard, i + k ,j);
                     }
                 }
             }
@@ -254,7 +254,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
                     }
                     else
                     {
-                        gameBoard.candyGrid[i][j + k].isMarkedDeletion = true;
+                        triggerCandyEffect(gameBoard, i ,j + k);
                     }
                 }
             }
@@ -279,7 +279,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
                     }
                     else
                     {
-                        gameBoard.candyGrid[i + k][j].isMarkedDeletion = true;
+                        triggerCandyEffect(gameBoard, i + k ,j);
                     }
                 }
             }
@@ -476,4 +476,123 @@ void triggerCandyEffect(Board &gameboard, int row, int col)
     }
 }
 
+// bomb candy interactions
 
+void handleBombBomb(Board &gameboard)
+{
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+
+            triggerCandyEffect(gameboard, r, c);
+        }
+    }
+}
+
+void handleBombStriped(Board &gameboard,swappedCandies swappedcandies){
+    Candy candy1=gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column];
+    Candy candy2=gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column];
+    CandyColor targetColor=(candy1.color==Bomb)?candy2.color:candy1.color;
+
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+            if (gameboard.candyGrid[r][c].color == targetColor)
+            {
+                gameboard.candyGrid[r][c].type=(getRand(0,1)==0)?Striped_horizontal:Striped_vertical;
+            }
+        }
+    }
+
+    // explode that color
+    destroyColor(gameboard, targetColor);
+
+    //destroy the original 2
+    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
+    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+}
+
+void handleBombWrapped(Board &gameboard,swappedCandies swappedcandies){
+    Candy candy1=gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column];
+    Candy candy2=gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column];
+    CandyColor targetColor=(candy1.color==Bomb)?candy2.color:candy1.color;
+
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+            if (gameboard.candyGrid[r][c].color == targetColor)
+            {
+                gameboard.candyGrid[r][c].type=Wrapped;
+            }
+        }
+    }
+
+    // explode that color
+    destroyColor(gameboard, targetColor);
+
+    //destroy the original 2
+    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
+    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+
+}
+
+void handleBombPlain(Board &gameboard,swappedCandies swappedcandies){
+    Candy candy1=gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column];
+    Candy candy2=gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column];
+    CandyColor targetColor=(candy1.color==Bomb)?candy2.color:candy1.color;
+
+    // explode that color
+    destroyColor(gameboard, targetColor);
+
+    //destroy the original 2
+    triggerCandyEffect(gameboard, swappedcandies.candy1row, swappedcandies.candy1column);
+    triggerCandyEffect(gameboard, swappedcandies.candy2row, swappedcandies.candy2column);
+}
+
+bool handleSpecialInteraction(Board &gameBoard, swappedCandies swappedcandies)
+{
+    Candy candy1 = gameBoard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column];
+    Candy candy2 = gameBoard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column];
+
+    // BOMB CANDY INTERACTION
+
+    if (candy1.color == Bomb && candy2.color == Bomb)
+    {
+        handleBombBomb(gameBoard);
+        return true;
+    }
+    
+    if(candy1.color==Bomb || candy2.color==Bomb){
+        CandyType otherType=(candy1.color==Bomb)?candy2.type:candy1.type;
+        if(otherType==Plain){
+            handleBombPlain(gameBoard,swappedcandies);
+            return true;
+        }
+        else if(otherType==Striped_horizontal || otherType==Striped_vertical){
+            handleBombStriped(gameBoard,swappedcandies);
+            return true;
+        }
+        else if(otherType==Wrapped){
+            handleBombWrapped(gameBoard,swappedcandies);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isDeletedPresent(Board &gameBoard){
+    for (int r = 0; r < MAX_ROWS; ++r)
+    {
+        for (int c = 0; c < MAX_COLUMNS; ++c)
+        {
+            if (gameBoard.candyGrid[r][c].isMarkedDeletion)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
