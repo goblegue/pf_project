@@ -291,7 +291,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
 }
 
 // function to check and mark L or T shape matches on board
-bool findAndMarkLorTshapeMatches(Board &gameBoard, swappedCandies swappedcandies)
+bool findAndMarkLorTshapeMatches(Board &gameBoard)
 {
     bool isFound{};
     for (int row{0}; row < MAX_ROWS; row++)
@@ -378,24 +378,21 @@ void refillBoard(Board& board, Vector2 gridOffset, int tileSize) {
     }
 }
 
-// handle matches and refills
-int handleMatchAndRefill(Board &gameBoard, swappedCandies swappedcandies, Vector2 gridOffset, const int tileSize)
+int getScoreFromMarkedCandies(const Board &gameBoard)
 {
-    int score = 0;
-    while (findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(gameBoard, swappedcandies) || findAndMarkThreeMatches(gameBoard))
+    int currentMoveScore = 0;
+    for (int i = 0; i < MAX_ROWS; i++)
     {
-        for (int i = 0; i < MAX_ROWS; i++)
+        for (int j = 0; j < MAX_COLUMNS; j++)
         {
-            for (int j = 0; j < MAX_COLUMNS; j++)
+            // Only count candies that are about to be removed
+            if (gameBoard.candyGrid[i][j].isMarkedDeletion) 
             {
-                if (gameBoard.candyGrid[i][j].isMarkedDeletion == true)
-                {
-                    score += candypoints[gameBoard.candyGrid[i][j].color];
-                }
+                // Add points based on color
+                currentMoveScore += candypoints[gameBoard.candyGrid[i][j].color];
+                
             }
         }
-        applyGravity(gameBoard, gridOffset, tileSize);
-        refillBoard(gameBoard, gridOffset, tileSize);
     }
-    return score;
+    return currentMoveScore;
 }

@@ -9,7 +9,8 @@ enum GameState
     INPUT,
     SWAPPING,
     REVERSING,
-    PROCESSING
+    PROCESSING_MATCHES,
+    ANIMATING_FALL
 };
 
 int main()
@@ -18,7 +19,7 @@ int main()
     const int screenHeight = 850;
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 350.0f;
+    const float FALL_SPEED = 300.0f;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
     SetTargetFPS(60);
 
@@ -64,7 +65,7 @@ int main()
             {
                 if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
                 {
-                    currentState = PROCESSING;
+                    currentState = PROCESSING_MATCHES;
                 }
                 else
                 {
@@ -79,33 +80,35 @@ int main()
                 currentState = INPUT;
             }
             break;
-        case PROCESSING:
-            score += handleMatchAndRefill(gameBoard, swappedcandies, renderer.gridOffset, TILE_SIZE);
-            currentState = INPUT;
-            break;
-        default:
+        case PROCESSING_MATCHES:
+        {
+            bool matchFound = findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(gameBoard) || findAndMarkThreeMatches(gameBoard);
+            if (matchFound)
+            {
+                score += getScoreFromMarkedCandies(gameBoard);
+                applyGravity(gameBoard, renderer.gridOffset, TILE_SIZE);
+                refillBoard(gameBoard, renderer.gridOffset, TILE_SIZE);
+                currentState = ANIMATING_FALL;
+            }
+            else
+            {
+                currentState = INPUT;
+            }
             break;
         }
+        case ANIMATING_FALL:
+        {
 
-        // if(isMoving) {
-        //     gameState = Animating;
-        // } else {
-        //     // Finished animating
-        //     gameState = Playing;
-        // }
+            if (!isMoving)
+            {
+                currentState = PROCESSING_MATCHES;
+            }
+            break;
+        }
+        default:
 
-        // if(gameState==Playing){
-
-        //     Vector2 gridOffset ={renderer.gridOffset.x, renderer.gridOffset.y};
-
-        //     // Handle input here...
-        //     bool swapedOccure=handleMouseInput(gameBoard, selection,gridOffset,TILE_SIZE);
-        //     swappedcandies=getSwappedCandies();
-
-        //     if(swapedOccure){
-        //         score+=handleMatchAndRefill(gameBoard, swappedcandies, gridOffset, TILE_SIZE);
-        //     }
-        // }
+            break;
+        }
 
         // --- Drawing ---
         BeginDrawing();
