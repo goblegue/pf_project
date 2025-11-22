@@ -63,7 +63,7 @@ bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOf
             }
             if(isAdjacent(row1,column1,row2,column2))
             {
-                return trySwapping(gameBoard,swappedcandies);
+                return true;
             }
         }
     }

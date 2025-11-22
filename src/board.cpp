@@ -36,9 +36,10 @@ Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize)
         gridOffset.y + row * tileSize};
 }
 
-bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize)
+bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, float speed)
 {
     bool isAnimating = false;
+    float step = speed * GetFrameTime();
     for (int r = 0; r < MAX_ROWS; ++r)
     {
         for (int c = 0; c < MAX_COLUMNS; ++c)
@@ -49,17 +50,17 @@ bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize)
             Vector2 &current = gameBoard.candyGrid[r][c].currentPos;
 
             float dist = Vector2Distance(current, target);
-            if (dist > 0.5f)
+            if (dist > 0.01f)
             { // If not at target
                 isAnimating = true;
                 // Move current towards target
                 // Use simple linear interpolation or constant speed
                 Vector2 direction = Vector2Subtract(target, current);
                 direction = Vector2Normalize(direction);
-                current = Vector2Add(current, Vector2Scale(direction, ANIMATION_SPEED));
+                current = Vector2Add(current, Vector2Scale(direction, step));
 
                 // Snap if close
-                if (Vector2Distance(current, target) < ANIMATION_SPEED)
+                if (Vector2Distance(current, target) < step)
                 {
                     current = target;
                 }
@@ -68,6 +69,8 @@ bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize)
     }
     return isAnimating;
 }
+
+
 
 // function for swapping candies
 void swapCandies(Board &gameBoard, int row1, int column1, int row2, int column2)
@@ -120,21 +123,8 @@ bool isPartOfMatch(Board &gameBoard, int row, int coloumn)
 {
     return checkHorizontalMatch(gameBoard, row, coloumn) || checkVerticalMatch(gameBoard, row, coloumn);
 }
-// function to try swapping two candies
-bool trySwapping(Board &gameBoard, swappedCandies swappedcandies)
 
-{
-    swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-    if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
-    {
-        return true;
-    }
-    else
-    {
-        swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column); // swap back if no match
-        return false;
-    }
-}
+
 
 // for testing purposes only
 bool testSwapping(Board &gameBoard, swappedCandies swappedcandies)
