@@ -3,6 +3,7 @@
 
 #include "board.hpp"
 #include "input.hpp"
+#include "fileHandler.hpp"
 
 #define Prod
 
@@ -20,6 +21,8 @@ int main()
     const int screenWidth = 640;
     const int screenHeight = 850;
 
+    const int totalMoves{20};
+
     const float SWAP_SPEED = 300.0f;
     const float FALL_SPEED = 300.0f;
     InitWindow(screenWidth, screenHeight, "Candy Crush");
@@ -34,7 +37,10 @@ int main()
     SelectedCandy selection{};       // To track selected candy
     swappedCandies swappedcandies{}; // To track swapped candies
 
+    int targetScore{};
     int score{};
+    int movesLeft{totalMoves};
+
     GameState currentState = INPUT;
 
     // --- Main Game Loop ---
@@ -72,6 +78,7 @@ int main()
 #ifdef Prod
                 else if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
                 {
+                    movesLeft--;
                     currentState = PROCESSING_MATCHES;
                 }
 #endif
@@ -108,6 +115,7 @@ int main()
             }
             else
             {
+                saveBoardToFile(gameBoard, score, movesLeft, "savefile.txt");
                 currentState = INPUT;
             }
             break;
@@ -133,6 +141,7 @@ int main()
         // Pass both the game grid and renderer to the draw function
         drawBoard(renderer, gameBoard, selection);
         DrawText(TextFormat("Score: %i", score), 50, 50, 20, CC_TEXT_GOLD);
+        DrawText(TextFormat("Moves Left: %i", movesLeft), screenWidth - 300, 50, 20, CC_TEXT_GOLD);
         EndDrawing();
     }
 
