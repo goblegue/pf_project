@@ -123,14 +123,6 @@ bool isPartOfMatch(Board &gameBoard, int row, int coloumn)
     return checkHorizontalMatch(gameBoard, row, coloumn) || checkVerticalMatch(gameBoard, row, coloumn);
 }
 
-// for testing purposes only
-bool testSwapping(Board &gameBoard, swappedCandies swappedcandies)
-
-{
-    swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-    return true;
-}
-
 // function to find and mark three matches on the board
 bool findAndMarkThreeMatches(Board &gameBoard)
 {

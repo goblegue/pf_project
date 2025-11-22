@@ -52,9 +52,6 @@ int handleMatchAndRefill(Board &gameBoard, swappedCandies swappedcandies, Vector
 void swapCandies(Board &gameBoard, int row1, int coloumn1, int row2, int coloumn2);
 bool isPartOfMatch(Board &gameBoard, int row, int coloumn);
 
-bool trySwapping(Board &gameBoard, swappedCandies swappedcandies);
-bool testSwapping(Board &gameBoard, swappedCandies swappedcandies);
-
 int getScoreFromMarkedCandies(const Board &gameBoard);
 
 bool findAndMarkLorTshapeMatches(Board &gameBoard);
