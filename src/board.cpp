@@ -36,7 +36,7 @@ Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize)
         gridOffset.y + row * tileSize};
 }
 
-bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, float speed)
+bool animatBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, float speed)
 {
     bool isAnimating = false;
     float step = speed * GetFrameTime();
@@ -53,8 +53,7 @@ bool animationBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, fl
             if (dist > 0.01f)
             { // If not at target
                 isAnimating = true;
-                // Move current towards target
-                // Use simple linear interpolation or constant speed
+
                 Vector2 direction = Vector2Subtract(target, current);
                 direction = Vector2Normalize(direction);
                 current = Vector2Add(current, Vector2Scale(direction, step));
@@ -79,11 +78,11 @@ void swapCandies(Board &gameBoard, int row1, int column1, int row2, int column2)
     gameBoard.candyGrid[row1][column1] = gameBoard.candyGrid[row2][column2];
     gameBoard.candyGrid[row2][column2] = temp;
 
-    Vector2 pos1 = gameBoard.candyGrid[row1][column1].currentPos;
-    Vector2 pos2 = gameBoard.candyGrid[row2][column2].currentPos;
+    // Vector2 pos1 = gameBoard.candyGrid[row1][column1].currentPos;
+    // Vector2 pos2 = gameBoard.candyGrid[row2][column2].currentPos;
 
-    gameBoard.candyGrid[row1][column1].currentPos = pos2;
-    gameBoard.candyGrid[row2][column2].currentPos = pos1;
+    // gameBoard.candyGrid[row1][column1].currentPos = pos2;
+    // gameBoard.candyGrid[row2][column2].currentPos = pos1;
 }
 
 // function to check if candy is part of match

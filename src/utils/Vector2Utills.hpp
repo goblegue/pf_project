@@ -39,21 +39,3 @@ inline float Vector2Length(Vector2 v)
 {
     return sqrtf((v.x * v.x) + (v.y * v.y));
 }
-
-inline Vector2 MoveTowards(Vector2 current, Vector2 target, float maxDistance)
-{
-    float dist = Vector2Distance(current, target);
-
-    // If we are already at or very close to the target, just snap to it.
-    if (dist <= maxDistance)
-    {
-        return target;
-    }
-
-    // Otherwise, move towards the target by maxDistance.
-    Vector2 direction = Vector2Subtract(target, current);
-    Vector2 normalizedDir = Vector2Normalize(direction);
-    Vector2 movement = Vector2Scale(normalizedDir, maxDistance);
-
-    return Vector2Add(current, movement);
-}

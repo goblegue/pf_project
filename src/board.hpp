@@ -47,7 +47,7 @@ void initializeGrid(Board &gameBoard,Vector2 gridOffset,const int tileSize);
 int handleMatchAndRefill (Board &gameBoard,swappedCandies swap);
 
 
-bool animationBoard(Board& gameBoard, Vector2 gridOffset,const int tileSize, float speed);
+bool animatBoard(Board& gameBoard, Vector2 gridOffset,const int tileSize, float speed);
 
 Vector2 getTargetPos(int row, int col, Vector2 gridOffset, const int tileSize);
 
