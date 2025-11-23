@@ -1,12 +1,11 @@
 #include "raylib.h"
 #include "frontend/renderer.hpp"
-
 #include "grid/board.hpp"
 #include "input/input.hpp"
 #include "audio/audio.hpp"
 #include "db/fileHandler.hpp"
 
-#define Testing //Prod for production, Testing for testing
+#define Prod // Prod for production, Testing for testing
 
 enum GameState
 {
@@ -16,6 +15,61 @@ enum GameState
     PROCESSING_MATCHES,
     ANIMATING_FALL
 };
+
+enum GamePage
+{
+    MAIN_MENU,
+    IN_GAME,
+    SETTINGS,
+    PAUSE_MENU
+};
+
+struct Game
+{
+    Board gameBoard;
+    Audio gameAudio;
+    Renderer renderer;
+    GameState currentState;
+    GamePage currentPage;
+    int targetScore;
+    int score;
+    int movesLeft;
+};
+
+void handleOnClickFunction(ButtonAction action, Game &currentGame)
+{
+    switch (action)
+    {
+    case ACTION_NEW_GAME:
+        initializeGrid(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
+        currentGame.score = 0;
+        currentGame.movesLeft = 20;
+        currentGame.currentState = INPUT;
+        currentGame.currentPage = IN_GAME;
+        break;
+
+    case ACTION_LOAD_GAME:
+
+        // if(loadGame(...)) currentState = INPUT;
+        if (loadBoardFromFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt"))
+        {
+            currentGame.currentState = INPUT;
+            currentGame.currentPage = IN_GAME;
+        }
+        else
+        {
+            DrawText("Failed to load game!", 200, 200, 20, RED);
+        }
+        break;
+
+    case ACTION_EXIT:
+        CloseWindow(); // Or set a flag like shouldClose = true
+        break;
+
+    default:
+        break;
+    }
+}
 
 int main()
 {
@@ -27,136 +81,156 @@ int main()
     const float SWAP_SPEED = 300.0f;
     const float FALL_SPEED = 100.0f;
 
-    int targetScore{};
-    int score{};
-    int movesLeft{totalMoves};
 
     float volume{1.0f};
     InitWindow(screenWidth, screenHeight, "Candy Crush");
     InitAudioDevice();
     SetTargetFPS(60);
-    
+
     // --- Setup ---
-    Board gameBoard;
-    Audio gameAudio;
-    Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
-    initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE);   // Initialize game logic
-    initAudio(gameAudio,"assets/music/candy_crush_intro2.mp3", volume);                                        // Initialize audio
+    Game currentGame{};
+    currentGame.renderer = initRenderer(screenWidth, screenHeight);                    // Initialize graphics
+    initializeGrid(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE); // Initialize game logic
+    initAudio(currentGame.gameAudio, "assets/music/candy_crush_intro2.mp3", volume);   // Initialize audio
 
     SelectedCandy selection{};       // To track selected candy
     swappedCandies swappedcandies{}; // To track swapped candies
 
+    currentGame.movesLeft = totalMoves;
+    currentGame.currentState = INPUT;
+    currentGame.currentPage = MAIN_MENU;
 
-    GameState currentState = INPUT;
-    playMusic(gameAudio);
+    playMusic(currentGame.gameAudio);
     // --- Main Game Loop ---
     while (!WindowShouldClose())
     {
 
-        updateAudioStream(gameAudio); 
+        updateAudioStream(currentGame.gameAudio);
 
-        float currAniSpeed = FALL_SPEED;
-
-        if (currentState == SWAPPING || currentState == REVERSING)
+        if (currentGame.currentPage == MAIN_MENU)
         {
-            currAniSpeed = SWAP_SPEED;
-        }
+            // Draw Menu
+            BeginDrawing();
+            ClearBackground(CC_BG_DARK);
+            drawMenu(currentGame.renderer);
 
-        bool isMoving = animatBoard(gameBoard, renderer.gridOffset, TILE_SIZE, currAniSpeed);
-
-        switch (currentState)
-        {
-        case INPUT:
-            if (!isMoving)
+            // Handle button clicks
+            for (int i = 0; i < MAXMENUBUTTONS; ++i)
             {
-                if (handleMouseInput(selection, renderer.gridOffset, TILE_SIZE))
+                if (isButtonPressed(currentGame.renderer.menuButtons[i]))
                 {
-                    swappedcandies = getSwappedCandies();
-                    swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-                    currentState = SWAPPING;
+                    handleOnClickFunction(currentGame.renderer.menuButtons[i].action, currentGame);
                 }
             }
-            break;
-        case SWAPPING:
-            if (!isMoving)
+
+            EndDrawing();
+        }
+        else if (currentGame.currentPage == IN_GAME)
+        {
+            // --- Update ---
+            float currAniSpeed = FALL_SPEED;
+
+            if (currentGame.currentState == SWAPPING || currentGame.currentState == REVERSING)
             {
-                if (handleSpecialInteraction(gameBoard, swappedcandies))
+                currAniSpeed = SWAP_SPEED;
+            }
+
+            bool isMoving = animatBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE, currAniSpeed);
+
+            switch (currentGame.currentState)
+            {
+            case INPUT:
+                if (!isMoving)
                 {
-                    currentState = PROCESSING_MATCHES;
+                    if (handleMouseInput(selection, currentGame.renderer.gridOffset, TILE_SIZE))
+                    {
+                        swappedcandies = getSwappedCandies();
+                        swapCandies(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
+                        currentGame.currentState = SWAPPING;
+                    }
                 }
+                break;
+            case SWAPPING:
+                if (!isMoving)
+                {
+                    if (handleSpecialInteraction(currentGame.gameBoard, swappedcandies))
+                    {
+                        currentGame.currentState = PROCESSING_MATCHES;
+                    }
 #ifdef Prod
-                else if (isPartOfMatch(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
-                {
-                    movesLeft--;
-                    currentState = PROCESSING_MATCHES;
-                }
+                    else if (isPartOfMatch(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(currentGame.gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
+                    {
+                       currentGame.movesLeft--;
+                        currentGame.currentState = PROCESSING_MATCHES;
+                    }
 #endif
 
 #ifdef Testing
-                else if (true) // Always true for testing purposes
-                {
-                    currentState = PROCESSING_MATCHES;
-                }
+                    else if (true) // Always true for testing purposes
+                    {
+                        currentGame.currentState = PROCESSING_MATCHES;
+                    }
 #endif
+                    else
+                    {
+                        swapCandies(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
+                        currentGame.currentState = REVERSING;
+                    }
+                }
+                break;
+            case REVERSING:
+                if (!isMoving)
+                {
+                    currentGame.currentState = INPUT;
+                }
+                break;
+            case PROCESSING_MATCHES:
+            {
+                bool deletedPresent = isDeletedPresent(currentGame.gameBoard);
+                bool matchFound = findAndMarkFiveMatches(currentGame.gameBoard, swappedcandies) || findAndMarkFourMatches(currentGame.gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(currentGame.gameBoard) || findAndMarkThreeMatches(currentGame.gameBoard);
+                if (matchFound || deletedPresent)
+                {
+                    currentGame.score += getScoreFromMarkedCandies(currentGame.gameBoard);
+                    applyGravity(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
+                    refillBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
+                    currentGame.currentState = ANIMATING_FALL;
+                }
                 else
                 {
-                    swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-                    currentState = REVERSING;
+                    saveBoardToFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt");
+                    currentGame.currentState = INPUT;
                 }
+                break;
             }
-            break;
-        case REVERSING:
-            if (!isMoving)
+            case ANIMATING_FALL:
             {
-                currentState = INPUT;
+
+                if (!isMoving)
+                {
+                    currentGame.currentState = PROCESSING_MATCHES;
+                }
+                break;
             }
-            break;
-        case PROCESSING_MATCHES:
-        {
-            bool deletedPresent = isDeletedPresent(gameBoard);
-            bool matchFound = findAndMarkFiveMatches(gameBoard, swappedcandies) || findAndMarkFourMatches(gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(gameBoard) || findAndMarkThreeMatches(gameBoard);
-            if (matchFound || deletedPresent)
-            {
-                score += getScoreFromMarkedCandies(gameBoard);
-                applyGravity(gameBoard, renderer.gridOffset, TILE_SIZE);
-                refillBoard(gameBoard, renderer.gridOffset, TILE_SIZE);
-                currentState = ANIMATING_FALL;
+            default:
+
+                break;
             }
-            else
-            {
-                saveBoardToFile(gameBoard, targetScore,score, movesLeft, "savefile.txt");
-                currentState = INPUT;
-            }
-            break;
+
+            // --- Drawing ---
+            BeginDrawing();
+            ClearBackground(CC_BG_DARK);
+
+            // Pass both the game grid and renderer to the draw function
+            drawBoard(currentGame.renderer, currentGame.gameBoard, selection);
+            DrawText(TextFormat("Score: %i", currentGame.score), 50, 50, 20, CC_TEXT_GOLD);
+            DrawText(TextFormat("Moves Left: %i", currentGame.movesLeft), screenWidth - 300, 50, 20, CC_TEXT_GOLD);
+            EndDrawing();
         }
-        case ANIMATING_FALL:
-        {
-
-            if (!isMoving)
-            {
-                currentState = PROCESSING_MATCHES;
-            }
-            break;
-        }
-        default:
-
-            break;
-        }
-
-        // --- Drawing ---
-        BeginDrawing();
-        ClearBackground(CC_BG_DARK);
-
-        // Pass both the game grid and renderer to the draw function
-        drawBoard(renderer, gameBoard, selection);
-        DrawText(TextFormat("Score: %i", score), 50, 50, 20, CC_TEXT_GOLD);
-        DrawText(TextFormat("Moves Left: %i", movesLeft), screenWidth - 300, 50, 20, CC_TEXT_GOLD);
-        EndDrawing();
     }
 
     // --- Teardown ---
-    unloadRenderer(renderer); // Unload graphics
-    unloadAudio(gameAudio);   // Unload audio
+    unloadRenderer(currentGame.renderer); // Unload graphics
+    unloadAudio(currentGame.gameAudio);   // Unload audio
     CloseWindow();
 
     return 0;

@@ -6,7 +6,35 @@ const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each
 Renderer initRenderer(int windowWidth, int windowHeight)
 {
     Renderer renderer{};
-    renderer.candyTexture = LoadTexture("assets/textures/candies.png"); // Load candy sprite sheet
+    renderer.candyTexture = LoadTexture("assets/textures/candies.png");     // Load candy sprite sheet
+    renderer.buttonTexture = LoadTexture("assets/textures/Menu_Icons.png"); // Load button sprite sheet
+
+    Rectangle BigPinkButton{};
+    BigPinkButton.x = 735;
+    BigPinkButton.y = 0;
+    BigPinkButton.width = 265;
+    BigPinkButton.height = 110;
+
+    Rectangle SmallBlueButton{};
+    SmallBlueButton.x = 734;
+    SmallBlueButton.y = 510;
+    SmallBlueButton.width = 265;
+    SmallBlueButton.height = 75;
+
+    // menu buttons
+    renderer.menuButtons[ACTION_NEW_GAME] =
+        {BigPinkButton,
+         {windowWidth / 2.0f - 132.5f, windowHeight * 0.4f, 265.0f, 110.0f},
+         "NEW GAME",
+         false,
+         ACTION_NEW_GAME};
+
+    renderer.menuButtons[ACTION_LOAD_GAME] =
+        {SmallBlueButton,
+         {windowWidth / 2.0f - 132.5f, windowHeight * 0.55f, 265.0f, 75.0f},
+         "LOAD GAME",
+         false,
+         ACTION_LOAD_GAME};
 
     // plain candy source rectangles
     renderer.plainCandySourceRecs[Red] = {0.0f, 740.0f, 100.0f, 100.0f};     // location of red candy in sprite sheet
@@ -44,6 +72,7 @@ Renderer initRenderer(int windowWidth, int windowHeight)
 void unloadRenderer(Renderer &renderer)
 {
     UnloadTexture(renderer.candyTexture);
+    UnloadTexture(renderer.buttonTexture);
 }
 
 void drawBoard(const Renderer &renderer, const Board &gameBoard, const SelectedCandy &selection)
@@ -88,5 +117,41 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard, const SelectedC
                 DrawTexturePro(renderer.candyTexture, sourceRec, {drawPos.x, drawPos.y, (float)TILE_SIZE, (float)TILE_SIZE}, {0, 0}, 0.0f, WHITE);
             }
         }
+    }
+}
+
+void drawButton(const Renderer &renderer, const Button &btn)
+{
+    // check hover and click state
+    Vector2 mousePos = GetMousePosition();
+    bool isHovering = CheckCollisionPointRec(mousePos, btn.bounds);
+
+    Color tint = WHITE;
+    if (btn.isClicked)
+        tint = GRAY;
+    else if (isHovering)
+        tint = LIGHTGRAY;
+
+    // draw button background
+    DrawTexturePro(renderer.buttonTexture, btn.sourceRec, btn.bounds, {0, 0}, 0.0f, tint);
+
+    // draw button label
+    int fontSize = 30;
+
+    int textWidth = MeasureText(btn.label, fontSize);
+
+    int textX = btn.bounds.x + (btn.bounds.width / 2) - (textWidth / 2);
+    int textY = btn.bounds.y + (btn.bounds.height / 2) - (fontSize / 2);
+
+    DrawText(btn.label, textX + 2, textY + 2, fontSize, BLACK); // shadow
+    DrawText(btn.label, textX, textY, fontSize, GOLD);
+}
+
+void drawMenu(const Renderer &renderer)
+{
+    // draw all menu buttons
+    for (int i = 0; i < MAXMENUBUTTONS; i++)
+    {
+        drawButton(renderer, renderer.menuButtons[i]);
     }
 }
