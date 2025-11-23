@@ -1,12 +1,12 @@
 #include "raylib.h"
-#include "renderer.hpp"
+#include "frontend/renderer.hpp"
 
-#include "board.hpp"
-#include "input.hpp"
-#include "audio.hpp"
-#include "fileHandler.hpp"
+#include "grid/board.hpp"
+#include "input/input.hpp"
+#include "audio/audio.hpp"
+#include "db/fileHandler.hpp"
 
-#define Prod //Prod for production, Testing for testing
+#define Testing //Prod for production, Testing for testing
 
 enum GameState
 {
@@ -25,7 +25,7 @@ int main()
     const int totalMoves{20};
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 200.0f;
+    const float FALL_SPEED = 100.0f;
 
     int targetScore{};
     int score{};
@@ -41,7 +41,7 @@ int main()
     Audio gameAudio;
     Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
     initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE);   // Initialize game logic
-    initAudio(gameAudio,"assets/audio/candy_crush_intro2.mp3", volume);                                        // Initialize audio
+    initAudio(gameAudio,"assets/music/candy_crush_intro2.mp3", volume);                                        // Initialize audio
 
     SelectedCandy selection{};       // To track selected candy
     swappedCandies swappedcandies{}; // To track swapped candies
