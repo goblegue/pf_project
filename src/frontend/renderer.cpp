@@ -6,7 +6,7 @@ const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each
 Renderer initRenderer(int windowWidth, int windowHeight)
 {
     Renderer renderer{};
-    renderer.candyTexture = LoadTexture("../assets/textures/candies.png"); // Load candy sprite sheet
+    renderer.candyTexture = LoadTexture("assets/textures/candies.png"); // Load candy sprite sheet
 
     // plain candy source rectangles
     renderer.plainCandySourceRecs[Red] = {0.0f, 740.0f, 100.0f, 100.0f};     // location of red candy in sprite sheet
