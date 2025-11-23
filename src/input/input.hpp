@@ -3,8 +3,7 @@
 
 #include "raylib.h"
 
-// Forward declaration
-struct Board;
+struct Button;
 
 enum SwapOrientation
 {
@@ -40,5 +39,7 @@ bool isAdjacent (int row1,int column1,int row2,int column2);
 bool handleMouseInput (SelectedCandy &selection, Vector2 gridOffSet, const int TILE_SIZE);
 
 swappedCandies getSwappedCandies();
+
+bool isButtonPressed(Button &btn);
 
 #endif

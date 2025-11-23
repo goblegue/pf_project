@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "input.hpp"
 #include "../grid/board.hpp"
+#include "../frontend/renderer.hpp"
 
 swappedCandies swappedcandies; // global variable to keep track of swapped candies
 
@@ -72,5 +73,23 @@ bool handleMouseInput (SelectedCandy &selection, Vector2 gridOffSet , const int 
 
 swappedCandies getSwappedCandies(){
     return swappedcandies;
+}
+
+bool isButtonPressed(Button &btn)
+{
+    Vector2 mousePos = GetMousePosition();
+    
+
+    bool isHovering = CheckCollisionPointRec(mousePos, btn.bounds);
+
+
+    if (isHovering && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        btn.isClicked = true;
+        return true;
+    }
+
+    btn.isClicked = false;
+    return false;
 }
 
