@@ -6,7 +6,7 @@
 #include "audio.hpp"
 #include "fileHandler.hpp"
 
-#define Testing
+#define Prod //Prod for production, Testing for testing
 
 enum GameState
 {
@@ -25,7 +25,7 @@ int main()
     const int totalMoves{20};
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 100.0f;
+    const float FALL_SPEED = 200.0f;
 
     int targetScore{};
     int score{};
