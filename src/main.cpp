@@ -3,9 +3,10 @@
 
 #include "board.hpp"
 #include "input.hpp"
+#include "audio.hpp"
 #include "fileHandler.hpp"
 
-#define Prod
+#define Testing
 
 enum GameState
 {
@@ -24,28 +25,36 @@ int main()
     const int totalMoves{20};
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 300.0f;
-    InitWindow(screenWidth, screenHeight, "Candy Crush");
-    SetTargetFPS(60);
-
-    // --- Setup ---
-    Board gameBoard;
-
-    Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
-    initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE);   // Initialize game logic
-
-    SelectedCandy selection{};       // To track selected candy
-    swappedCandies swappedcandies{}; // To track swapped candies
+    const float FALL_SPEED = 100.0f;
 
     int targetScore{};
     int score{};
     int movesLeft{totalMoves};
 
-    GameState currentState = INPUT;
+    float volume{1.0f};
+    InitWindow(screenWidth, screenHeight, "Candy Crush");
+    InitAudioDevice();
+    SetTargetFPS(60);
+    
+    // --- Setup ---
+    Board gameBoard;
+    Audio gameAudio;
+    Renderer renderer = initRenderer(screenWidth, screenHeight); // Initialize graphics
+    initializeGrid(gameBoard, renderer.gridOffset, TILE_SIZE);   // Initialize game logic
+    initAudio(gameAudio,"assets/audio/candy_crush_intro2.mp3", volume);                                        // Initialize audio
 
+    SelectedCandy selection{};       // To track selected candy
+    swappedCandies swappedcandies{}; // To track swapped candies
+
+
+    GameState currentState = INPUT;
+    playMusic(gameAudio);
     // --- Main Game Loop ---
     while (!WindowShouldClose())
     {
+
+        updateAudioStream(gameAudio); 
+
         float currAniSpeed = FALL_SPEED;
 
         if (currentState == SWAPPING || currentState == REVERSING)
@@ -115,7 +124,7 @@ int main()
             }
             else
             {
-                saveBoardToFile(gameBoard, score, movesLeft, "savefile.txt");
+                saveBoardToFile(gameBoard, targetScore,score, movesLeft, "savefile.txt");
                 currentState = INPUT;
             }
             break;
@@ -147,6 +156,7 @@ int main()
 
     // --- Teardown ---
     unloadRenderer(renderer); // Unload graphics
+    unloadAudio(gameAudio);   // Unload audio
     CloseWindow();
 
     return 0;
