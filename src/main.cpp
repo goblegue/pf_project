@@ -69,7 +69,7 @@ int main()
         case INPUT:
             if (!isMoving)
             {
-                if (handleMouseInput(gameBoard, selection, renderer.gridOffset, TILE_SIZE))
+                if (handleMouseInput(selection, renderer.gridOffset, TILE_SIZE))
                 {
                     swappedcandies = getSwappedCandies();
                     swapCandies(gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);

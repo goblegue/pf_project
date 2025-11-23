@@ -29,7 +29,7 @@ bool isAdjacent (int row1,int column1,int row2,int column2)
 }
 
 //  handles mouse input and swaps two candies
-bool handleMouseInput (Board &gameBoard,SelectedCandy &selection, Vector2 gridOffSet , const int TILE_SIZE)
+bool handleMouseInput (SelectedCandy &selection, Vector2 gridOffSet , const int TILE_SIZE)
 {
     int row1,column1,row2,column2;
 
