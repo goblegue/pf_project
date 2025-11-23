@@ -30,14 +30,14 @@ bool saveBoardToFile(const Board& board,int targetScore ,int score, int moves, c
     return true;
 }
 
-bool loadBoardFromFile(Board& board, int& score, int& moves, const char filename[])
+bool loadBoardFromFile(Board& board, int& targetScore, int& score, int& moves, const char filename[])
 {
     ifstream file(filename); 
     if (!file.is_open()) {
         return false;
     }
 
-    file >> score >> moves;
+    file >> targetScore >> score >> moves;
 
     int rows, cols;
     file >> rows >> cols; 
