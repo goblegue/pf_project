@@ -5,7 +5,7 @@
 #include "audio/audio.hpp"
 #include "db/fileHandler.hpp"
 
-#define Prod // Prod for production, Testing for testing
+#define Testing // Prod for production, Testing for testing
 
 enum GameState
 {
@@ -50,7 +50,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
 
     case ACTION_LOAD_GAME:
 
-        // if(loadGame(...)) currentState = INPUT;
+        
         if (loadBoardFromFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt"))
         {
             currentGame.currentState = INPUT;
@@ -79,7 +79,7 @@ int main()
     const int totalMoves{20};
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 100.0f;
+    const float FALL_SPEED = 300.0f;
 
 
     float volume{1.0f};

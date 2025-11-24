@@ -4,8 +4,25 @@
 #include "../utils/Vector2Utills.hpp"
 #include "../input/input.hpp"
 
+#define prod;
+
 void triggerCandyEffect(Board &gameboard, int row, int col);
 
+#ifdef Testing
+#include <iostream>
+void printMarkedDeletions(const Board &gameBoard)
+{
+    std::cout << "Marked Deletions:\n";
+    for (int i = 0; i < MAX_ROWS; ++i)
+    {
+        for (int j = 0; j < MAX_COLUMNS; ++j)
+        {
+            std::cout << (gameBoard.candyGrid[i][j].isMarkedDeletion ? "X " : "O ");
+        }
+        std::cout << "\n";
+    }
+}
+#endif
 // points associated with each candy color
 void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize)
 {
@@ -17,6 +34,7 @@ void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize)
         {
             newCandy.isMarkedDeletion = false;
             newCandy.type = Plain;
+
             CandyColor candyColor;
             do
             {
@@ -193,14 +211,16 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
                 {
                     for (int k{0}; k < 4; k++)
                     {
+                        triggerCandyEffect(gameBoard, i, j + k);
+
                         if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
                         {
-
+                            if (gameBoard.candyGrid[i][j + k].type != Plain)
+                            {
+                                triggerCandyEffect(gameBoard, i, j + k);
+                            }
                             gameBoard.candyGrid[i][j + k].type = (swappedcandies.orientation == Horizontal) ? Striped_horizontal : Striped_vertical;
-                        }
-                        else
-                        {
-                            triggerCandyEffect(gameBoard, i, j + k);
+                            gameBoard.candyGrid[i][j + k].isMarkedDeletion = false;
                         }
                     }
                 }
@@ -246,14 +266,17 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
                 {
                     for (int k{0}; k < 4; k++)
                     {
+                        triggerCandyEffect(gameBoard, i + k, j);
                         if ((i + k == swappedcandies.candy1row && j == swappedcandies.candy1column) || (i + k == swappedcandies.candy2row && j == swappedcandies.candy2column))
                         {
+                            if (gameBoard.candyGrid[i + k][j].type != Plain)
+                            {
+                                triggerCandyEffect(gameBoard, i + k, j);
+                            }
                             gameBoard.candyGrid[i + k][j].type = (swappedcandies.orientation == Horizontal) ? Striped_horizontal : Striped_vertical;
+                            gameBoard.candyGrid[i + k][j].isMarkedDeletion = false;
                         }
-                        else
-                        {
-                            triggerCandyEffect(gameBoard, i + k, j);
-                        }
+                        
                     }
                 }
                 else
@@ -281,7 +304,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
 {
     bool isFound{};
     bool swappedInMatch{};
-    // checks horizontally 5 plain candies
+    // checks horizontally 5 candies
     for (int i = 0; i < MAX_ROWS; i++)
     {
         for (int j = 0; j < MAX_COLUMNS - 4; j++)
@@ -305,14 +328,17 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
                 {
                     for (int k{0}; k < 5; k++)
                     {
+                        triggerCandyEffect(gameBoard, i, j + k);
                         if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
                         {
+                            if(gameBoard.candyGrid[i][j + k].type != Plain)
+                            {
+                                triggerCandyEffect(gameBoard, i, j + k);
+                            }
                             gameBoard.candyGrid[i][j + k].color = Bomb;
+                            gameBoard.candyGrid[i][j + k].isMarkedDeletion = false;
                         }
-                        else
-                        {
-                            triggerCandyEffect(gameBoard, i, j + k);
-                        }
+                        
                     }
                 }
                 else
@@ -334,7 +360,7 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
         }
     }
 
-    // checks vertically 5 plain candies
+    // checks vertically 5 candies
     for (int i = 0; i < MAX_ROWS - 4; i++)
     {
         for (int j = 0; j < MAX_COLUMNS; j++)
@@ -359,14 +385,17 @@ bool findAndMarkFiveMatches(Board &gameBoard, swappedCandies swappedcandies)
                 {
                     for (int k{0}; k < 5; k++)
                     {
+                        triggerCandyEffect(gameBoard, i + k, j);
                         if ((i + k == swappedcandies.candy1row && j == swappedcandies.candy1column) || (i + k == swappedcandies.candy2row && j == swappedcandies.candy2column))
                         {
+                            if(gameBoard.candyGrid[i + k][j].type != Plain)
+                            {
+                                triggerCandyEffect(gameBoard, i + k, j);
+                            }
                             gameBoard.candyGrid[i + k][j].color = Bomb;
+                            gameBoard.candyGrid[i + k][j].isMarkedDeletion = false;
                         }
-                        else
-                        {
-                            triggerCandyEffect(gameBoard, i + k, j);
-                        }
+                        
                     }
                 }
                 else
@@ -405,9 +434,8 @@ bool findAndMarkLorTshapeMatches(Board &gameBoard)
             if (isverticalMatch && ishorizontalMatch)
             {
                 isFound = true;
+                
                 CandyColor color = gameBoard.candyGrid[row][col].color;
-                gameBoard.candyGrid[row][col].type = Wrapped;
-
                 // mark left
                 for (int c = col - 1; c >= 0 && gameBoard.candyGrid[row][c].color == color; c--)
                 {
@@ -428,6 +456,13 @@ bool findAndMarkLorTshapeMatches(Board &gameBoard)
                 {
                     triggerCandyEffect(gameBoard, r, col);
                 }
+                // mark pivot/ center candy
+                if(gameBoard.candyGrid[row][col].type != Plain)
+                {
+                    triggerCandyEffect(gameBoard, row, col);
+                }
+                gameBoard.candyGrid[row][col].type = Wrapped;
+                gameBoard.candyGrid[row][col].isMarkedDeletion = false;
             }
         }
     }
@@ -491,11 +526,12 @@ int getScoreFromMarkedCandies(const Board &gameBoard)
     {
         for (int j = 0; j < MAX_COLUMNS; j++)
         {
-            // Only count candies that are about to be removed
             if (gameBoard.candyGrid[i][j].isMarkedDeletion)
             {
-                // Add points based on color
-                currentMoveScore += candypoints[gameBoard.candyGrid[i][j].color];
+                if (gameBoard.candyGrid[i][j].color != Bomb)
+                {
+                    currentMoveScore += candypoints[gameBoard.candyGrid[i][j].color];
+                }
             }
         }
     }
@@ -547,6 +583,10 @@ void destroyColor(Board &gameBoard, CandyColor color)
             if (gameBoard.candyGrid[r][c].color == color)
             {
                 triggerCandyEffect(gameBoard, r, c);
+#ifdef Testing
+                printMarkedDeletions(gameBoard);
+                std::cout << std::endl;
+#endif
             }
         }
     }
@@ -559,6 +599,7 @@ void triggerCandyEffect(Board &gameboard, int row, int col)
     if (gameboard.candyGrid[row][col].isMarkedDeletion)
         return;
     gameboard.candyGrid[row][col].isMarkedDeletion = true;
+
     if (gameboard.candyGrid[row][col].color == Bomb)
     {
         destroyColor(gameboard, static_cast<CandyColor>(getRand(0, 4)));
@@ -621,9 +662,8 @@ void handleBombStriped(Board &gameboard, swappedCandies swappedcandies)
 
     // explode that color
     destroyColor(gameboard, targetColor);
-
-    // destroy the original 2
-    destroyOriginalSpecial(gameboard, swappedcandies);
+    gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion = true;
+    gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion = true;
 }
 
 void handleBombWrapped(Board &gameboard, swappedCandies swappedcandies)
@@ -646,8 +686,8 @@ void handleBombWrapped(Board &gameboard, swappedCandies swappedcandies)
     // explode that color
     destroyColor(gameboard, targetColor);
 
-    // destroy the original 2
-    destroyOriginalSpecial(gameboard, swappedcandies);
+    gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion = true;
+    gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion = true;
 }
 
 void handleBombPlain(Board &gameboard, swappedCandies swappedcandies)
@@ -656,11 +696,16 @@ void handleBombPlain(Board &gameboard, swappedCandies swappedcandies)
     Candy candy2 = gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column];
     CandyColor targetColor = (candy1.color == Bomb) ? candy2.color : candy1.color;
 
+#ifdef Testing
+    std::cout << "Target Color to destroy: " << static_cast<int>(targetColor) << "\n";
+#endif
+
     // explode that color
     destroyColor(gameboard, targetColor);
 
     // destroy the original 2
-    destroyOriginalSpecial(gameboard, swappedcandies);
+    gameboard.candyGrid[swappedcandies.candy1row][swappedcandies.candy1column].isMarkedDeletion = true;
+    gameboard.candyGrid[swappedcandies.candy2row][swappedcandies.candy2column].isMarkedDeletion = true;
 }
 
 // combo special interactions
