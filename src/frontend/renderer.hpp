@@ -27,6 +27,7 @@ struct Button
     char label[32];
     bool isClicked;
     ButtonAction action;
+    char buttonInstruction[128];
 };
 struct Renderer
 {

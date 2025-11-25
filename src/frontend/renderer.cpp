@@ -28,7 +28,6 @@ Renderer initRenderer()
     Rectangle RED_EXIT_BUTTON{405, 130, 95, 90};
     Rectangle SETTINGS_BUTTON{510, 90, 95, 95};
 
-    
     // plain candy source rectangles
     renderer.plainCandySourceRecs[Red] = {0.0f, 740.0f, 100.0f, 100.0f};     // location of red candy in sprite sheet
     renderer.plainCandySourceRecs[Yellow] = {500.0f, 640.0f, 85.0f, 100.0f}; // location of yellow candy in sprite sheet
@@ -43,20 +42,20 @@ Renderer initRenderer()
     renderer.wrappedCandySourceRecs[Yellow] = {630.0f, 90.0f, 100.0f, 100.0f};  // location of yellow wrapped candy in sprite sheet
     renderer.wrappedCandySourceRecs[Green] = {655.0f, 210.0f, 100.0f, 100.0f};  // location of green wrapped candy in sprite sheet
     renderer.wrappedCandySourceRecs[Blue] = {745.0f, 0.0f, 100.0f, 90.0f};      // location of blue wrapped candy in sprite sheet
-    
+
     // horizontal striped candy source rectangles
     renderer.horiStripedCandySourceRecs[Red] = {200.0f, 740.0f, 100.0f, 100.0f};   // location of red horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Orange] = {380.0f, 740.0f, 90.0f, 100.0f}; // location of orange horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Yellow] = {690.0f, 655.0f, 85.0f, 90.0f};  // location of yellow horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Green] = {295.0f, 740.0f, 100.0f, 100.0f}; // location of green horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Blue] = {300.0f, 635.0f, 100.0f, 100.0f};  // location of blue horizontally striped candy in sprite sheet
-    
+
     renderer.vertStripedCandySourceRecs[Red] = {400.0f, 640.0f, 100.0f, 100.0f};   // location of red vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Orange] = {575.0f, 740.0f, 85.0f, 100.0f}; // location of orange vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Yellow] = {837.0f, 95.0f, 85.0f, 90.0f};   // location of yellow vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Green] = {95.0f, 740.0f, 100.0f, 100.0f};  // location of green vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Blue] = {200.0f, 640.0f, 100.0f, 100.0f};  // location of blue vertically striped candy in sprite sheet
-    
+
     renderer.gridOffset.x = (windowWidth - (MAX_COLUMNS * TILE_SIZE)) / 2.0f; // center the grid horizontally
     renderer.gridOffset.y = windowHeight * TOP_MARGIN;                        // set the distance from top to grid start
     // menu buttons
@@ -65,43 +64,49 @@ Renderer initRenderer()
          {windowWidth / 2.0f - 170.0f, windowHeight * 0.51f, 350.0f, 120.0f},
          "NEW GAME",
          false,
-         ACTION_NEW_GAME};
+         ACTION_NEW_GAME,
+         "Start a new game"};
 
     renderer.menuButtons[ACTION_LOAD_GAME] =
         {SmallBlueButton,
          {windowWidth / 2.0f - 165.0f, windowHeight * 0.665f, 350.0f, 85.0f},
          "LOAD GAME",
          false,
-         ACTION_LOAD_GAME};
+         ACTION_LOAD_GAME,
+         "Load a previously saved game"};
 
     renderer.menuButtons[ACTION_SETTINGS] = {
         SETTINGS_BUTTON,
         {windowWidth - 100.0f, windowHeight - 110.0f, 70.0f, 70.0f},
         "",
         false,
-        ACTION_SETTINGS};
+        ACTION_SETTINGS,
+        "Open Settings Menu"};
 
     renderer.menuButtons[ACTION_EXIT] = {
         RED_EXIT_BUTTON,
         {40.0f, windowHeight - 110.0f, 70.0f, 70.0f},
         "",
         false,
-        ACTION_EXIT};
+        ACTION_EXIT,
+        "Save and Exit the game"};
 
     // in_game buttons
     renderer.gameButtons[0] = {
         SETTINGS_BUTTON,
-        {renderer.gridOffset.x+(TILE_SIZE*(MAX_COLUMNS-1))+10, 50, 55.0f, 55.0f},
+        {renderer.gridOffset.x + (TILE_SIZE * (MAX_COLUMNS - 1)) + 10, 50, 55.0f, 55.0f},
         "",
         false,
-        ACTION_SETTINGS};
+        ACTION_SETTINGS,
+        "Open In-Game Settings"};
 
     renderer.gameButtons[1] = {
         RED_EXIT_BUTTON,
-        {renderer.gridOffset.x+5, 50.0f, 55.0f, 55.0f},
+        {renderer.gridOffset.x + 5, 50.0f, 55.0f, 55.0f},
         "",
         false,
-        ACTION_EXIT};
+        ACTION_EXIT,
+        "Save and Exit the game"};
     return renderer;
 }
 
@@ -157,6 +162,40 @@ void drawBoard(const Renderer &renderer, const Board &gameBoard, const SelectedC
     }
 }
 
+// From raylib examples
+void drawButtonInstruction(const Button &btn)
+{
+    int fontSize = 15;
+    int padding = 10;
+    int distanceFromButton = 2;
+    Color boxColor = RAYWHITE;
+    Color textColor = BLACK;
+    Color borderColor = LIGHTGRAY;
+
+    Vector2 textSize = MeasureTextEx(GetFontDefault(), btn.buttonInstruction, (float)fontSize, 1.0f);
+
+    float posX = btn.bounds.x + (btn.bounds.width / 2) - (textSize.x / 2);
+    float posY = btn.bounds.y - textSize.y - (padding * 2) - distanceFromButton;
+
+    if (posX < 20)
+        posX = 20;
+    if (posY < 0)
+        posY = btn.bounds.y + btn.bounds.height + distanceFromButton;
+    if (posX + textSize.x + (padding * 2) > GetScreenWidth())
+        posX = GetScreenWidth() - textSize.x - (padding * 2) - 10;
+
+    Rectangle boxRect = {
+        posX - padding,
+        posY - padding,
+        textSize.x + (padding * 2),
+        textSize.y + (padding * 2)};
+
+    DrawRectangleRec(boxRect, boxColor);
+    DrawRectangleLinesEx(boxRect, 2, borderColor);
+
+    DrawTextEx(GetFontDefault(), btn.buttonInstruction, (Vector2){posX, posY}, (float)fontSize, 1.0f, textColor);
+}
+
 void drawButton(const Renderer &renderer, const Button &btn)
 {
     // check hover and click state
@@ -166,9 +205,13 @@ void drawButton(const Renderer &renderer, const Button &btn)
     Color tint = WHITE;
     if (btn.isClicked)
         tint = GRAY;
-    else if (isHovering)
+    else if (isHovering){
         tint = LIGHTGRAY;
-
+        drawButtonInstruction(btn);
+    }
+    else if (isHovering && btn.label == "")
+    {
+    }
     // draw button background
     DrawTexturePro(renderer.buttonTexture, btn.sourceRec, btn.bounds, {0, 0}, 0.0f, tint);
 
@@ -230,13 +273,14 @@ void drawGameScreen(const Renderer &renderer, const Board &gameBoard, const Sele
 {
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
-    for(int i{0};i<MAX_IN_GAME_BUTTONS;++i){
+    for (int i{0}; i < MAX_IN_GAME_BUTTONS; ++i)
+    {
         drawButton(renderer, renderer.gameButtons[i]);
     }
 
-    drawColoredLogo("CANDY CRUSH", renderer,4, (Vector2){screenWidth/ 2.0f-150, 40});
-    DrawText(TextFormat("Score: %i", score), renderer.gridOffset.x+10, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
-    DrawText(TextFormat("Target Score: %i", targetScore), renderer.gridOffset.x+10, renderer.gridOffset.y - 80, 22, CC_TEXT_GOLD);
-    DrawText(TextFormat("Moves Left: %i", movesLeft), renderer.gridOffset.x+(TILE_SIZE*(MAX_COLUMNS-1))-100, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
+    drawColoredLogo("CANDY CRUSH", renderer, 4, (Vector2){screenWidth / 2.0f - 150, 40});
+    DrawText(TextFormat("Score: %i", score), renderer.gridOffset.x + 10, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
+    DrawText(TextFormat("Target Score: %i", targetScore), renderer.gridOffset.x + 10, renderer.gridOffset.y - 80, 22, CC_TEXT_GOLD);
+    DrawText(TextFormat("Moves Left: %i", movesLeft), renderer.gridOffset.x + (TILE_SIZE * (MAX_COLUMNS - 1)) - 100, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
     drawBoard(renderer, gameBoard, selection);
 }
