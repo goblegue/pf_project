@@ -1,13 +1,17 @@
 #include "renderer.hpp"
+#include "../utils/CharUtils.hpp"
 
-const float TOP_MARGIN = 0.25f;           // Top margin as a fraction of window height
+const float TOP_MARGIN = 0.28f;           // Top margin as a fraction of window height
 const float TILE_BORDER_THICKNESS = 1.0f; // Thickness of the border around each tile
 
-Renderer initRenderer(int windowWidth, int windowHeight)
+Renderer initRenderer()
 {
+    int windowWidth = GetScreenWidth();
+    int windowHeight = GetScreenHeight();
     Renderer renderer{};
     renderer.candyTexture = LoadTexture("assets/textures/candies.png");     // Load candy sprite sheet
     renderer.buttonTexture = LoadTexture("assets/textures/Menu_Icons.png"); // Load button sprite sheet
+    renderer.logoFont = LoadFont("assets/fonts/logo.png");                  // Load logo font
 
     Rectangle BigPinkButton{};
     BigPinkButton.x = 735;
@@ -21,21 +25,10 @@ Renderer initRenderer(int windowWidth, int windowHeight)
     SmallBlueButton.width = 265;
     SmallBlueButton.height = 75;
 
-    // menu buttons
-    renderer.menuButtons[ACTION_NEW_GAME] =
-        {BigPinkButton,
-         {windowWidth / 2.0f - 132.5f, windowHeight * 0.4f, 265.0f, 110.0f},
-         "NEW GAME",
-         false,
-         ACTION_NEW_GAME};
+    Rectangle RED_EXIT_BUTTON{405, 130, 95, 90};
+    Rectangle SETTINGS_BUTTON{510, 90, 95, 95};
 
-    renderer.menuButtons[ACTION_LOAD_GAME] =
-        {SmallBlueButton,
-         {windowWidth / 2.0f - 132.5f, windowHeight * 0.55f, 265.0f, 75.0f},
-         "LOAD GAME",
-         false,
-         ACTION_LOAD_GAME};
-
+    
     // plain candy source rectangles
     renderer.plainCandySourceRecs[Red] = {0.0f, 740.0f, 100.0f, 100.0f};     // location of red candy in sprite sheet
     renderer.plainCandySourceRecs[Yellow] = {500.0f, 640.0f, 85.0f, 100.0f}; // location of yellow candy in sprite sheet
@@ -50,22 +43,65 @@ Renderer initRenderer(int windowWidth, int windowHeight)
     renderer.wrappedCandySourceRecs[Yellow] = {630.0f, 90.0f, 100.0f, 100.0f};  // location of yellow wrapped candy in sprite sheet
     renderer.wrappedCandySourceRecs[Green] = {655.0f, 210.0f, 100.0f, 100.0f};  // location of green wrapped candy in sprite sheet
     renderer.wrappedCandySourceRecs[Blue] = {745.0f, 0.0f, 100.0f, 90.0f};      // location of blue wrapped candy in sprite sheet
-
+    
     // horizontal striped candy source rectangles
     renderer.horiStripedCandySourceRecs[Red] = {200.0f, 740.0f, 100.0f, 100.0f};   // location of red horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Orange] = {380.0f, 740.0f, 90.0f, 100.0f}; // location of orange horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Yellow] = {690.0f, 655.0f, 85.0f, 90.0f};  // location of yellow horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Green] = {295.0f, 740.0f, 100.0f, 100.0f}; // location of green horizontally striped candy in sprite sheet
     renderer.horiStripedCandySourceRecs[Blue] = {300.0f, 635.0f, 100.0f, 100.0f};  // location of blue horizontally striped candy in sprite sheet
-
+    
     renderer.vertStripedCandySourceRecs[Red] = {400.0f, 640.0f, 100.0f, 100.0f};   // location of red vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Orange] = {575.0f, 740.0f, 85.0f, 100.0f}; // location of orange vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Yellow] = {837.0f, 95.0f, 85.0f, 90.0f};   // location of yellow vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Green] = {95.0f, 740.0f, 100.0f, 100.0f};  // location of green vertically striped candy in sprite sheet
     renderer.vertStripedCandySourceRecs[Blue] = {200.0f, 640.0f, 100.0f, 100.0f};  // location of blue vertically striped candy in sprite sheet
-
+    
     renderer.gridOffset.x = (windowWidth - (MAX_COLUMNS * TILE_SIZE)) / 2.0f; // center the grid horizontally
     renderer.gridOffset.y = windowHeight * TOP_MARGIN;                        // set the distance from top to grid start
+    // menu buttons
+    renderer.menuButtons[ACTION_NEW_GAME] =
+        {BigPinkButton,
+         {windowWidth / 2.0f - 170.0f, windowHeight * 0.51f, 350.0f, 120.0f},
+         "NEW GAME",
+         false,
+         ACTION_NEW_GAME};
+
+    renderer.menuButtons[ACTION_LOAD_GAME] =
+        {SmallBlueButton,
+         {windowWidth / 2.0f - 165.0f, windowHeight * 0.665f, 350.0f, 85.0f},
+         "LOAD GAME",
+         false,
+         ACTION_LOAD_GAME};
+
+    renderer.menuButtons[ACTION_SETTINGS] = {
+        SETTINGS_BUTTON,
+        {windowWidth - 100.0f, windowHeight - 110.0f, 70.0f, 70.0f},
+        "",
+        false,
+        ACTION_SETTINGS};
+
+    renderer.menuButtons[ACTION_EXIT] = {
+        RED_EXIT_BUTTON,
+        {40.0f, windowHeight - 110.0f, 70.0f, 70.0f},
+        "",
+        false,
+        ACTION_EXIT};
+
+    // in_game buttons
+    renderer.gameButtons[0] = {
+        SETTINGS_BUTTON,
+        {renderer.gridOffset.x+(TILE_SIZE*(MAX_COLUMNS-1))+10, 50, 55.0f, 55.0f},
+        "",
+        false,
+        ACTION_SETTINGS};
+
+    renderer.gameButtons[1] = {
+        RED_EXIT_BUTTON,
+        {renderer.gridOffset.x+5, 50.0f, 55.0f, 55.0f},
+        "",
+        false,
+        ACTION_EXIT};
     return renderer;
 }
 
@@ -73,6 +109,7 @@ void unloadRenderer(Renderer &renderer)
 {
     UnloadTexture(renderer.candyTexture);
     UnloadTexture(renderer.buttonTexture);
+    UnloadFont(renderer.logoFont);
 }
 
 void drawBoard(const Renderer &renderer, const Board &gameBoard, const SelectedCandy &selection)
@@ -147,11 +184,59 @@ void drawButton(const Renderer &renderer, const Button &btn)
     DrawText(btn.label, textX, textY, fontSize, GOLD);
 }
 
+void drawColoredLogo(const char logoText[], Renderer renderer, float fontSizeMultiplier, Vector2 startingPos)
+{
+    int windowWidth = GetScreenWidth();
+    int windowHeight = GetScreenHeight();
+    float fontSize = renderer.logoFont.baseSize * fontSizeMultiplier;
+    Color colors[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+    int textLength = lengthOfCharArray(logoText);
+    Vector2 currentPos = startingPos;
+    for (int i = 0; i < textLength; i++)
+    {
+        float spaceing = 0.57f;
+        char currentChar = logoText[i];
+        char charStr[3];
+        charToString(currentChar, charStr);
+        Color currentColor = WHITE;
+        if (currentChar != ' ')
+        {
+            currentColor = colors[i % 6];
+        }
+        else
+        {
+            spaceing = 1.2f;
+        }
+        DrawTextEx(renderer.logoFont, charStr, currentPos, fontSize, spaceing, currentColor);
+        int charWidth = MeasureText(charStr, fontSize);
+        currentPos.x += charWidth * spaceing;
+    }
+}
+
 void drawMenu(const Renderer &renderer)
 {
+    int windowWidth = GetScreenWidth();
+    int windowHeight = GetScreenHeight();
+    // draw logo
+    drawColoredLogo("CANDY CRUSH", renderer, 7.0, (Vector2){windowWidth / 2.0f - 260.0f, windowHeight / 2.0f - 300});
     // draw all menu buttons
-    for (int i = 0; i < MAXMENUBUTTONS; i++)
+    for (int i = 0; i < MAX_MENU_BUTTONS; i++)
     {
         drawButton(renderer, renderer.menuButtons[i]);
     }
+}
+
+void drawGameScreen(const Renderer &renderer, const Board &gameBoard, const SelectedCandy &selection, int score, int movesLeft, int targetScore)
+{
+    int screenWidth = GetScreenWidth();
+    int screenHeight = GetScreenHeight();
+    for(int i{0};i<MAX_IN_GAME_BUTTONS;++i){
+        drawButton(renderer, renderer.gameButtons[i]);
+    }
+
+    drawColoredLogo("CANDY CRUSH", renderer,4, (Vector2){screenWidth/ 2.0f-150, 40});
+    DrawText(TextFormat("Score: %i", score), renderer.gridOffset.x+10, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
+    DrawText(TextFormat("Target Score: %i", targetScore), renderer.gridOffset.x+10, renderer.gridOffset.y - 80, 22, CC_TEXT_GOLD);
+    DrawText(TextFormat("Moves Left: %i", movesLeft), renderer.gridOffset.x+(TILE_SIZE*(MAX_COLUMNS-1))-100, renderer.gridOffset.y - 40, 20, CC_TEXT_GOLD);
+    drawBoard(renderer, gameBoard, selection);
 }

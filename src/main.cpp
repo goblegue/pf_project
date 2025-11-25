@@ -5,7 +5,7 @@
 #include "audio/audio.hpp"
 #include "db/fileHandler.hpp"
 
-#define Testing // Prod for production, Testing for testing
+#define Dev // Dev for development, Testing for testing
 
 enum GameState
 {
@@ -34,7 +34,17 @@ struct Game
     int targetScore;
     int score;
     int movesLeft;
+    bool isGameOver;
+    bool isCloseRequested;
 };
+
+void handleGameClosure(Game &currentGame)
+{
+    unloadAudio(currentGame.gameAudio);
+    unloadRenderer(currentGame.renderer);
+    CloseAudioDevice();
+    CloseWindow();
+}
 
 void handleOnClickFunction(ButtonAction action, Game &currentGame)
 {
@@ -50,7 +60,6 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
 
     case ACTION_LOAD_GAME:
 
-        
         if (loadBoardFromFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt"))
         {
             currentGame.currentState = INPUT;
@@ -63,7 +72,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
         break;
 
     case ACTION_EXIT:
-        CloseWindow(); // Or set a flag like shouldClose = true
+        currentGame.isCloseRequested = true;
         break;
 
     default:
@@ -81,7 +90,6 @@ int main()
     const float SWAP_SPEED = 300.0f;
     const float FALL_SPEED = 300.0f;
 
-
     float volume{1.0f};
     InitWindow(screenWidth, screenHeight, "Candy Crush");
     InitAudioDevice();
@@ -89,13 +97,13 @@ int main()
 
     // --- Setup ---
     Game currentGame{};
-    currentGame.renderer = initRenderer(screenWidth, screenHeight);                    // Initialize graphics
+    currentGame.renderer = initRenderer();                    // Initialize graphics
     initializeGrid(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE); // Initialize game logic
     initAudio(currentGame.gameAudio, "assets/music/candy_crush_intro2.mp3", volume);   // Initialize audio
 
     SelectedCandy selection{};       // To track selected candy
     swappedCandies swappedcandies{}; // To track swapped candies
-
+    currentGame.targetScore = 50000;
     currentGame.movesLeft = totalMoves;
     currentGame.currentState = INPUT;
     currentGame.currentPage = MAIN_MENU;
@@ -114,16 +122,19 @@ int main()
             ClearBackground(CC_BG_DARK);
             drawMenu(currentGame.renderer);
 
-            // Handle button clicks
-            for (int i = 0; i < MAXMENUBUTTONS; ++i)
+            // handle button clicks
+            for (int i = 0; i < MAX_MENU_BUTTONS; ++i)
             {
                 if (isButtonPressed(currentGame.renderer.menuButtons[i]))
                 {
                     handleOnClickFunction(currentGame.renderer.menuButtons[i].action, currentGame);
                 }
             }
-
             EndDrawing();
+            if (currentGame.isCloseRequested)
+            {
+                break;
+            }
         }
         else if (currentGame.currentPage == IN_GAME)
         {
@@ -157,10 +168,10 @@ int main()
                     {
                         currentGame.currentState = PROCESSING_MATCHES;
                     }
-#ifdef Prod
+#ifdef Dev
                     else if (isPartOfMatch(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(currentGame.gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
                     {
-                       currentGame.movesLeft--;
+                        currentGame.movesLeft--;
                         currentGame.currentState = PROCESSING_MATCHES;
                     }
 #endif
@@ -216,22 +227,28 @@ int main()
                 break;
             }
 
-            // --- Drawing ---
+            // Drawing 
             BeginDrawing();
             ClearBackground(CC_BG_DARK);
-
-            // Pass both the game grid and renderer to the draw function
-            drawBoard(currentGame.renderer, currentGame.gameBoard, selection);
-            DrawText(TextFormat("Score: %i", currentGame.score), 50, 50, 20, CC_TEXT_GOLD);
-            DrawText(TextFormat("Moves Left: %i", currentGame.movesLeft), screenWidth - 300, 50, 20, CC_TEXT_GOLD);
+            // handle button clicks
+            for (int i = 0; i < MAX_IN_GAME_BUTTONS; ++i)
+            {
+                if (isButtonPressed(currentGame.renderer.gameButtons[i]))
+                {
+                    handleOnClickFunction(currentGame.renderer.gameButtons[i].action, currentGame);
+                }
+            }
+            drawGameScreen(currentGame.renderer, currentGame.gameBoard, selection, currentGame.score, currentGame.movesLeft, currentGame.targetScore);
             EndDrawing();
+            if (currentGame.isCloseRequested)
+            {
+                break;
+            }
         }
     }
 
     // --- Teardown ---
-    unloadRenderer(currentGame.renderer); // Unload graphics
-    unloadAudio(currentGame.gameAudio);   // Unload audio
-    CloseWindow();
+    handleGameClosure(currentGame);
 
     return 0;
 }

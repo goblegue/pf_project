@@ -4,8 +4,7 @@
 #include "../utils/Vector2Utills.hpp"
 #include "../input/input.hpp"
 
-#define prod;
-
+#define dev;
 void triggerCandyEffect(Board &gameboard, int row, int col);
 
 #ifdef Testing
