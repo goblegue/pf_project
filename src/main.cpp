@@ -1,11 +1,15 @@
+#define RAYGUI_IMPLEMENTATION
+
 #include "raylib.h"
 #include "frontend/renderer.hpp"
 #include "grid/board.hpp"
 #include "input/input.hpp"
 #include "audio/audio.hpp"
 #include "db/fileHandler.hpp"
+#include "frontend/settings/settings.hpp"
+#include "frontend/instructions/instruction.hpp"
 
-#define Dev // Dev for development, Testing for testing
+#define dev;
 
 enum GameState
 {
@@ -21,7 +25,7 @@ enum GamePage
     MAIN_MENU,
     IN_GAME,
     SETTINGS,
-    PAUSE_MENU
+    INSTRUCTION_PAGE
 };
 
 struct Game
@@ -31,6 +35,7 @@ struct Game
     Renderer renderer;
     GameState currentState;
     GamePage currentPage;
+    GameSettings settings;
     int targetScore;
     int score;
     int movesLeft;
@@ -75,6 +80,12 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
         currentGame.isCloseRequested = true;
         break;
 
+    case ACTION_BACK_TO_MAIN_MENU:
+        currentGame.currentPage = MAIN_MENU;
+        break;
+    case ACTION_SETTINGS:
+        currentGame.currentPage = SETTINGS;
+        break;
     default:
         break;
     }
@@ -88,7 +99,12 @@ int main()
     const int totalMoves{20};
 
     const float SWAP_SPEED = 300.0f;
-    const float FALL_SPEED = 300.0f;
+#ifndef Testing
+     float FALL_SPEED ;
+#endif
+#ifdef Testing
+     float fallSpeed = 150.0f;
+#endif
 
     float volume{1.0f};
     InitWindow(screenWidth, screenHeight, "Candy Crush");
@@ -97,10 +113,10 @@ int main()
 
     // --- Setup ---
     Game currentGame{};
-    currentGame.renderer = initRenderer();                    // Initialize graphics
+    currentGame.renderer = initRenderer();                                             // Initialize graphics
     initializeGrid(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE); // Initialize game logic
     initAudio(currentGame.gameAudio, "assets/music/candy_crush_intro2.mp3", volume);   // Initialize audio
-
+    currentGame.settings = initGameSettings("assets/styles/style_lavanda.rgs");                      // Initialize settings UI style
     SelectedCandy selection{};       // To track selected candy
     swappedCandies swappedcandies{}; // To track swapped candies
     currentGame.targetScore = 50000;
@@ -112,8 +128,16 @@ int main()
     // --- Main Game Loop ---
     while (!WindowShouldClose())
     {
-
+        fallSpeed =(currentGame.settings.animationSpeed) * 50.0f;
         updateAudioStream(currentGame.gameAudio);
+        if(currentGame.settings.isMusicOn==0 ){
+            pauseMusic(currentGame.gameAudio);
+        }
+        else if(currentGame.settings.isMusicOn==1 ){
+            playMusic(currentGame.gameAudio);
+        }
+
+        changeVolume(currentGame.gameAudio, currentGame.settings.Volume);
 
         if (currentGame.currentPage == MAIN_MENU)
         {
@@ -136,10 +160,32 @@ int main()
                 break;
             }
         }
+        else if (currentGame.currentPage == SETTINGS)
+        {
+            BeginDrawing();
+            ClearBackground(CC_BG_DARK);
+            int nextPage=drawSettingsPage(currentGame.settings, currentGame.renderer);
+            if (nextPage != SETTINGS) {
+                currentGame.currentPage = (GamePage)nextPage;
+            }
+            EndDrawing();
+        }
+        else if (currentGame.currentPage == INSTRUCTION_PAGE)
+        {
+            BeginDrawing();
+            ClearBackground(CC_BG_DARK);
+            DrawInstructionPopup(currentGame.renderer.logoFont,screenWidth, screenHeight);
+            // back to main menu button
+            if (GuiButton({screenWidth / 2 - 100, screenHeight - 110, 200, 50}, "BACK TO MENU"))
+            {
+                currentGame.currentPage = MAIN_MENU;
+            }
+            EndDrawing();
+        }
         else if (currentGame.currentPage == IN_GAME)
         {
             // --- Update ---
-            float currAniSpeed = FALL_SPEED;
+            float currAniSpeed = fallSpeed;
 
             if (currentGame.currentState == SWAPPING || currentGame.currentState == REVERSING)
             {
@@ -168,7 +214,7 @@ int main()
                     {
                         currentGame.currentState = PROCESSING_MATCHES;
                     }
-#ifdef Dev
+#ifndef Testing
                     else if (isPartOfMatch(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(currentGame.gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
                     {
                         currentGame.movesLeft--;
@@ -227,7 +273,7 @@ int main()
                 break;
             }
 
-            // Drawing 
+            // Drawing
             BeginDrawing();
             ClearBackground(CC_BG_DARK);
             // handle button clicks

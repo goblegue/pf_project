@@ -98,15 +98,15 @@ Renderer initRenderer()
         "",
         false,
         ACTION_SETTINGS,
-        "Open In-Game Settings"};
+        "Open Settings Menu"};
 
     renderer.gameButtons[1] = {
         RED_EXIT_BUTTON,
         {renderer.gridOffset.x + 5, 50.0f, 55.0f, 55.0f},
         "",
         false,
-        ACTION_EXIT,
-        "Save and Exit the game"};
+        ACTION_BACK_TO_MAIN_MENU,
+        "Go Back to Main Menu"};
     return renderer;
 }
 
@@ -232,19 +232,19 @@ void drawColoredLogo(const char logoText[], Renderer renderer, float fontSizeMul
     int windowWidth = GetScreenWidth();
     int windowHeight = GetScreenHeight();
     float fontSize = renderer.logoFont.baseSize * fontSizeMultiplier;
-    Color colors[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+    Color colors[] = {RED, ORANGE, YELLOW, GREEN, BLUE};
     int textLength = lengthOfCharArray(logoText);
     Vector2 currentPos = startingPos;
     for (int i = 0; i < textLength; i++)
     {
         float spaceing = 0.57f;
         char currentChar = logoText[i];
-        char charStr[3];
+        char charStr[2];
         charToString(currentChar, charStr);
         Color currentColor = WHITE;
         if (currentChar != ' ')
         {
-            currentColor = colors[i % 6];
+            currentColor = colors[i % 5];
         }
         else
         {

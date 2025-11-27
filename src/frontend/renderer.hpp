@@ -5,6 +5,7 @@
 #include "../grid/board.hpp"
 #include "../input/input.hpp"
 #include "../colors/customColourPalette.hpp"
+#include "../colors/candyCrushPalette.hpp"
 
 const int MAXCANDYCOLORS{6}; // red,yellow,green,blue,orange,bomb
 
@@ -17,7 +18,8 @@ enum ButtonAction
     ACTION_NEW_GAME,
     ACTION_LOAD_GAME,
     ACTION_SETTINGS,
-    ACTION_EXIT
+    ACTION_EXIT,
+    ACTION_BACK_TO_MAIN_MENU
 };
 
 struct Button
