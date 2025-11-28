@@ -7,11 +7,13 @@
 #include "../colors/customColourPalette.hpp"
 #include "../colors/candyCrushPalette.hpp"
 
-const int MAXCANDYCOLORS{6}; // red,yellow,green,blue,orange,bomb
+const int MAXCANDYCOLORS{6}; 
 
 const int TILE_SIZE{64};
 const int MAX_IN_GAME_BUTTONS{2};
-const int MAX_MENU_BUTTONS{4}; // newgame , continue, settings , exit
+const int MAX_MENU_BUTTONS{4};
+const int MAX_WIN_BUTTONS{2}; 
+const int MAX_LOSE_BUTTONS{2};
 
 enum ButtonAction
 {
@@ -19,8 +21,11 @@ enum ButtonAction
     ACTION_LOAD_GAME,
     ACTION_SETTINGS,
     ACTION_EXIT,
-    ACTION_BACK_TO_MAIN_MENU
+    ACTION_BACK_TO_MAIN_MENU,
+    ACTION_RETRY,      // New
+    ACTION_NEXT_LEVEL  // New
 };
+
 
 struct Button
 {
@@ -31,18 +36,24 @@ struct Button
     ButtonAction action;
     char buttonInstruction[128];
 };
+
 struct Renderer
 {
-    Texture2D candyTexture;  // candy sprite sheet
-    Texture2D buttonTexture; // button sprite sheet
-    Font logoFont;          // logo font
-    Button menuButtons[MAX_MENU_BUTTONS]; // array of Buttons for menu
-    Button gameButtons[MAX_IN_GAME_BUTTONS];   // array of Buttons for in-game
+    Texture2D candyTexture;  
+    Texture2D buttonTexture;
+    Texture2D characterTexture; 
+    Font logoFont;          
+    Button menuButtons[MAX_MENU_BUTTONS];
+    Button gameButtons[MAX_IN_GAME_BUTTONS];
+    Button winButtons[MAX_WIN_BUTTONS];
+    Button loseButtons[MAX_LOSE_BUTTONS];
     Rectangle plainCandySourceRecs[MAXCANDYCOLORS];
     Rectangle wrappedCandySourceRecs[MAXCANDYCOLORS - 1];
     Rectangle horiStripedCandySourceRecs[MAXCANDYCOLORS - 1];
     Rectangle vertStripedCandySourceRecs[MAXCANDYCOLORS - 1];
-    Vector2 gridOffset; // distance from top-left corner to grid start
+    Rectangle winPanelRect[5];
+    Rectangle losePanelRect[1];
+    Vector2 gridOffset; 
 };
 
 Renderer initRenderer();
@@ -52,4 +63,6 @@ void drawButton(const Renderer &renderer, const Button &btn);
 void drawMenu(const Renderer &renderer);
 void drawColoredLogo(const char logoText[], Renderer renderer,float fontSizeMultiplier,Vector2 startingPos);
 void drawGameScreen(const Renderer &renderer, const Board &gameBoard, const SelectedCandy &selection, int score, int movesLeft, int targetScore);
+void drawWinScreen(const Renderer &renderer, int finalScore); 
+void drawLoseScreen(const Renderer &renderer);
 #endif

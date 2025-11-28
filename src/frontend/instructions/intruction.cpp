@@ -9,8 +9,8 @@ int DrawInstructionPopup(Font font, int previousPage)
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
     // 1. Drawing background
-    DrawRectangle(40, 40, screenWidth - 80, screenHeight - 80, DARK_PURPLE);
-    DrawRectangleLines(40, 40, screenWidth - 80, screenHeight - 80, CC_TEXT_GOLD);
+    DrawRectangleRounded((Rectangle) {40-2.5, 40-2.5, screenWidth - 80+5, screenHeight - 80+5},0.1f,100, CC_TEXT_GOLD);
+    DrawRectangleRounded((Rectangle){40, 40, screenWidth - 80, screenHeight - 80},0.1f,100, DARK_PURPLE);
 
     float x = 60;
     float y = 60;

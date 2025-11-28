@@ -100,6 +100,7 @@ Game initializeGame()
 
 void drawGame(Game &currentGame)
 {
+
     currentGame.fallSpeed = (currentGame.settings.animationSpeed) * 50.0f;
     updateAudioStream(currentGame.currentAudio);
     if (currentGame.previousMusicTrack != currentGame.settings.gameMusicTrack)
@@ -245,6 +246,16 @@ void drawGame(Game &currentGame)
             {
                 saveBoardToFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt");
                 currentGame.currentState = INPUT;
+                if (currentGame.score < currentGame.targetScore && currentGame.movesLeft <= 0)
+                {
+                    currentGame.currentPage = LOSE_PAGE;
+                    switchAudio(currentGame.currentAudio, currentGame.outroAudio);
+                }
+                else if (currentGame.score >= currentGame.targetScore)
+                {
+                    currentGame.currentPage = WIN_PAGE;
+                    switchAudio(currentGame.currentAudio, currentGame.outroAudio);
+                }
             }
             break;
         }
@@ -272,5 +283,31 @@ void drawGame(Game &currentGame)
             }
         }
         drawGameScreen(currentGame.renderer, currentGame.gameBoard, currentGame.selection, currentGame.score, currentGame.movesLeft, currentGame.targetScore);
+    }
+    else if (currentGame.currentPage == WIN_PAGE)
+    {
+        drawWinScreen(currentGame.renderer, currentGame.score);
+
+        // handle button clicks
+        for (int i = 0; i < MAX_WIN_BUTTONS; ++i)
+        {
+            if (isButtonPressed(currentGame.renderer.winButtons[i]))
+            {
+                handleOnClickFunction(currentGame.renderer.winButtons[i].action, currentGame);
+            }
+        }
+    }
+    else if (currentGame.currentPage == LOSE_PAGE)
+    {
+        drawLoseScreen(currentGame.renderer);
+
+        // handle button clicks
+        for (int i = 0; i < MAX_LOSE_BUTTONS; ++i)
+        {
+            if (isButtonPressed(currentGame.renderer.loseButtons[i]))
+            {
+                handleOnClickFunction(currentGame.renderer.loseButtons[i].action, currentGame);
+            }
+        }
     }
 }

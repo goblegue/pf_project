@@ -34,8 +34,8 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer, int previousPag
     float elementSpacingY = 25.0f;
 
     Color fontColor = {91, 91, 129, 255};
-    DrawRectangle(panelX, panelY, panelWidth, panelHeight, LITE_PURPLE);
-    DrawRectangleLines(panelX, panelY, panelWidth, panelHeight, CC_TEXT_GOLD);
+    DrawRectangleRounded((Rectangle){panelX-2.5, panelY-2.5, panelWidth+5, panelHeight+5},0.1f,100 ,CC_TEXT_GOLD);
+    DrawRectangleRounded((Rectangle){panelX, panelY, panelWidth, panelHeight},0.1f,100, LITE_PURPLE);
 
     Vector2 settingTitleSize = MeasureTextEx(renderer.logoFont, "SETTINGS", renderer.logoFont.baseSize * 3.5, 1);
     DrawTextEx(renderer.logoFont, "SETTINGS", (Vector2){(panelX) + (panelWidth / 2) - settingTitleSize.x / 2 + 10, panelY + elementSpacingY}, renderer.logoFont.baseSize * 3, 1, fontColor);

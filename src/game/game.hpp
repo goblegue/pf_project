@@ -22,7 +22,9 @@ enum GamePage
     MAIN_MENU,
     IN_GAME,
     SETTINGS,
-    INSTRUCTION_PAGE
+    INSTRUCTION_PAGE,
+    WIN_PAGE,
+    LOSE_PAGE
 };
 
 struct Game
