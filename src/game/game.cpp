@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "../db/fileHandler.hpp"
 #include "../frontend/instructions/instruction.hpp"
+#include "../utils/CharUtils.hpp"
 
 void handleGameClosure(Game &currentGame)
 {
@@ -91,6 +92,7 @@ Game initializeGame()
     newGame.movesLeft = 20;
     newGame.isGameOver = false;
     newGame.isCloseRequested = false;
+    newGame.previousMusicTrack = 0;
     newGame.currentAudio = newGame.introAudio;
 
     return newGame;
@@ -100,6 +102,39 @@ void drawGame(Game &currentGame)
 {
     currentGame.fallSpeed = (currentGame.settings.animationSpeed) * 50.0f;
     updateAudioStream(currentGame.currentAudio);
+    if (currentGame.previousMusicTrack != currentGame.settings.gameMusicTrack)
+    {
+        char selectedMusicPath[60];
+
+        if (currentGame.settings.gameMusicTrack == 0)
+        {
+            charAssignment(selectedMusicPath, "assets/music/candy_crush_loop5.ogg");
+        }
+        else if (currentGame.settings.gameMusicTrack == 1)
+        {
+            charAssignment(selectedMusicPath, "assets/music/candy_crush_soundtrack2.ogg");
+        }
+        else if (currentGame.settings.gameMusicTrack == 2)
+        {
+            charAssignment(selectedMusicPath, "assets/music/candy_crush_soundtrack3.ogg");
+        }
+        else if (currentGame.settings.gameMusicTrack == 3)
+        {
+            charAssignment(selectedMusicPath, "assets/music/candy_crush_soundtrack4.ogg");
+        }
+        else if (currentGame.settings.gameMusicTrack == 4)
+        {
+            charAssignment(selectedMusicPath, "assets/music/SA_Game_mode_mixed_modes_loop.ogg");
+        }
+
+        changeMusic(currentGame.gameAudio, selectedMusicPath);
+        if (currentGame.currentPage == IN_GAME || currentGame.previousPage == IN_GAME)
+        {
+            currentGame.currentAudio = currentGame.gameAudio;
+        }
+        currentGame.previousMusicTrack = currentGame.settings.gameMusicTrack;
+    }
+
     if (currentGame.settings.isMusicOn == 0)
     {
         pauseMusic(currentGame.currentAudio);
@@ -113,7 +148,6 @@ void drawGame(Game &currentGame)
 
     if (currentGame.currentPage == MAIN_MENU)
     {
-        // Draw Menu
         drawMenu(currentGame.renderer);
 
         // handle button clicks

@@ -44,6 +44,7 @@ struct Game
     float swapSpeed;
     bool isGameOver;
     bool isCloseRequested;
+    int previousMusicTrack;
     SelectedCandy selection;
     swappedCandies swappedcandies;
 };

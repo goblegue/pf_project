@@ -19,7 +19,6 @@ void changeMusic(Audio &gameAudio, const char musicFilePath[])
     SetMusicVolume(gameAudio.music, gameAudio.volume);
     gameAudio.isPlaying = false;
 }
-
 void playMusic(Audio &gameAudio)
 {
     if (!gameAudio.isPlaying)
