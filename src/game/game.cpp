@@ -3,6 +3,7 @@
 #include "../frontend/instructions/instruction.hpp"
 #include "../utils/CharUtils.hpp"
 
+#define dev 
 void handleGameClosure(Game &currentGame)
 {
     unloadAudio(currentGame.gameAudio);
@@ -48,7 +49,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
         {
             currentGame.currentState = INPUT;
             currentGame.currentPage = IN_GAME;
-            // switchAudio(currentGame.currentAudio, currentGame.gameAudio);
+            switchAudio(currentGame.currentAudio, currentGame.gameAudio);
         }
         else
         {
@@ -90,7 +91,6 @@ Game initializeGame()
     newGame.previousPage = MAIN_MENU;
     newGame.score = 0;
     newGame.movesLeft = 20;
-    newGame.isGameOver = false;
     newGame.isCloseRequested = false;
     newGame.previousMusicTrack = 0;
     newGame.currentAudio = newGame.introAudio;
@@ -122,10 +122,6 @@ void drawGame(Game &currentGame)
         else if (currentGame.settings.gameMusicTrack == 3)
         {
             charAssignment(selectedMusicPath, "assets/music/candy_crush_soundtrack4.ogg");
-        }
-        else if (currentGame.settings.gameMusicTrack == 4)
-        {
-            charAssignment(selectedMusicPath, "assets/music/SA_Game_mode_mixed_modes_loop.ogg");
         }
 
         changeMusic(currentGame.gameAudio, selectedMusicPath);
@@ -174,7 +170,7 @@ void drawGame(Game &currentGame)
     }
     else if (currentGame.currentPage == IN_GAME)
     {
-        // --- Update ---
+        
         float currAniSpeed = currentGame.fallSpeed;
 
         if (currentGame.currentState == SWAPPING || currentGame.currentState == REVERSING)
@@ -202,6 +198,7 @@ void drawGame(Game &currentGame)
             {
                 if (handleSpecialInteraction(currentGame.gameBoard, currentGame.swappedcandies))
                 {
+                    currentGame.movesLeft--;
                     currentGame.currentState = PROCESSING_MATCHES;
                 }
 #ifndef Testing

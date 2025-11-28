@@ -8,7 +8,7 @@ int DrawInstructionPopup(Font font, int previousPage)
 {
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
-    // 1. Drawing background
+    // drawing background
     DrawRectangleRounded((Rectangle) {40-2.5, 40-2.5, screenWidth - 80+5, screenHeight - 80+5},0.1f,100, CC_TEXT_GOLD);
     DrawRectangleRounded((Rectangle){40, 40, screenWidth - 80, screenHeight - 80},0.1f,100, DARK_PURPLE);
 
@@ -21,7 +21,7 @@ int DrawInstructionPopup(Font font, int previousPage)
     DrawTextEx(font, title, (Vector2){x, y}, 32, 1, CC_TEXT_GOLD);
     y += 60;
 
-    // 2. How to play section
+    // how to play section
     char howToPlayTitle[] = "HOW TO PLAY";
     DrawTextEx(font, howToPlayTitle, (Vector2){x, y}, 28, 1, CC_HEADER_TEXT);
     y += 35;
@@ -35,7 +35,7 @@ int DrawInstructionPopup(Font font, int previousPage)
     DrawTextEx(font, howToPlay, (Vector2){x, y}, 24, 1, RAYWHITE);
     y += 4 * lineSpacing;
 
-    // 3. Candy points section
+    // candy points section
     char pointsTitle[] = "CANDY POINT VALUES";
     DrawTextEx(font, pointsTitle, (Vector2){x, y}, 28, 1, CC_HEADER_TEXT);
     y += 35;
@@ -50,7 +50,7 @@ int DrawInstructionPopup(Font font, int previousPage)
     DrawTextEx(font, pointsText, (Vector2){x, y}, 24, 1, RAYWHITE);
     y += 5 * lineSpacing;
 
-    // 4. Special candy info
+    // special candy info
     char specialTitle[] = "SPECIAL CANDIES";
     DrawTextEx(font, specialTitle, (Vector2){x, y}, 28, 1, CC_HEADER_TEXT);
     y += 35;
@@ -64,7 +64,7 @@ int DrawInstructionPopup(Font font, int previousPage)
     DrawTextEx(font, specialText, (Vector2){x, y}, 24, 1, RAYWHITE);
     y += 4 * lineSpacing;
 
-    // 5. Win / lose rules
+    // win / lose rules
     char winLoseTitle[] = "WIN / LOSE RULES";
     DrawTextEx(font, winLoseTitle, (Vector2){x, y}, 28, 1, CC_HEADER_TEXT);
     y += 35;

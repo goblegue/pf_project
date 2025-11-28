@@ -97,11 +97,6 @@ void swapCandies(Board &gameBoard, int row1, int column1, int row2, int column2)
     gameBoard.candyGrid[row1][column1] = gameBoard.candyGrid[row2][column2];
     gameBoard.candyGrid[row2][column2] = temp;
 
-    // Vector2 pos1 = gameBoard.candyGrid[row1][column1].currentPos;
-    // Vector2 pos2 = gameBoard.candyGrid[row2][column2].currentPos;
-
-    // gameBoard.candyGrid[row1][column1].currentPos = pos2;
-    // gameBoard.candyGrid[row2][column2].currentPos = pos1;
 }
 
 // function to check if candy is part of match
@@ -201,9 +196,10 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
             if (!gameBoard.candyGrid[i][j].isMarkedDeletion && color == gameBoard.candyGrid[i][j + 1].color && color == gameBoard.candyGrid[i][j + 2].color && color == gameBoard.candyGrid[i][j + 3].color)
             {
                 isFound = true;
-                for (int k{0}; k < 5; k++)
+                for (int k{0}; k < 4; k++)
                 {
-                    if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
+                    if ((i == swappedcandies.candy1row && j + k == swappedcandies.candy1column) || 
+                    (i == swappedcandies.candy2row && j + k == swappedcandies.candy2column))
                     {
                         swappedInMatch = true;
                     }
@@ -256,7 +252,7 @@ bool findAndMarkFourMatches(Board &gameBoard, swappedCandies swappedcandies)
                 color == gameBoard.candyGrid[i + 3][j].color)
             {
                 isFound = true;
-                for (int k{0}; k < 5; k++)
+                for (int k{0}; k < 4; k++)
                 {
                     if ((i + k == swappedcandies.candy1row && j == swappedcandies.candy1column) || (i + k == swappedcandies.candy2row && j == swappedcandies.candy2column))
                     {
@@ -480,18 +476,14 @@ void applyGravity(Board &board, Vector2 gridOffset, int tileSize)
             if (board.candyGrid[readRow][c].isMarkedDeletion == false)
             {
 
-                // If we are moving a candy...
+
                 if (writeRow != readRow)
                 {
-                    // Copy data down to the write slot
-                    board.candyGrid[writeRow][c] = board.candyGrid[readRow][c];
 
-                    // Mark the old slot as empty so it will be refilled
+                    board.candyGrid[writeRow][c] = board.candyGrid[readRow][c];
                     board.candyGrid[readRow][c].isMarkedDeletion = true;
                     board.candyGrid[readRow][c].type = Plain;
 
-                    // KEY: The visual position stays exactly where it was (higher up)
-                    // The animation system will slide the candy down to the target.
                 }
                 writeRow--;
             }
@@ -512,7 +504,7 @@ void refillBoard(Board &board, Vector2 gridOffset, int tileSize)
                 board.candyGrid[r][c].isMarkedDeletion = false;
                 board.candyGrid[r][c].type = Plain;
 
-                // KEY: Spawn it ABOVE the board so it can animate into place
+                
                 Vector2 target = getTargetPos(r, c, gridOffset, tileSize);
                 board.candyGrid[r][c].currentPos = {target.x, GetScreenHeight() * 0.2f}; // Start way above
             }

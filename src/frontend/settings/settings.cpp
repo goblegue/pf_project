@@ -55,14 +55,14 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer, int previousPag
     // Back Button
 
     char backButtonLabel[20] = "BACK TO MENU";
-    if (previousPage == 1)
+    if (previousPage == 1) // in_game
     {
         charAssignment(backButtonLabel, "BACK TO GAME");
     }
-
+    
     if (GuiButton({panelX + panelWidth / 2 - 100, panelY + panelHeight - 100, 200, 50}, backButtonLabel))
     {
-        return previousPage; // MAIN_MENU
+        return previousPage; 
     }
 
     // Instruction page Button
@@ -72,7 +72,7 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer, int previousPag
     }
 
     // difficulty and music track dropdown Box (
-    const char musicOptions[] = "Track 1;Track 2;Track 3;Track 4;Track 5";
+    const char musicOptions[] = "Track 1;Track 2;Track 3;Track 4";
     DrawTextEx(renderer.logoFont, "Music Track", (Vector2){panelX + 50, toggleSliderY + 4 * elementSpacingY + 165}, renderer.logoFont.baseSize * 2.2, 1, fontColor);
     if (GuiDropdownBox({panelX + panelWidth - 175, toggleSliderY + 4 * elementSpacingY + 170, 140, 35}, musicOptions, &settings.gameMusicTrack, settings.dropDownEditModeTrack))
     {

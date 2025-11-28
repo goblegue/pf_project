@@ -126,6 +126,7 @@ void unloadRenderer(Renderer &renderer)
 {
     UnloadTexture(renderer.candyTexture);
     UnloadTexture(renderer.buttonTexture);
+    UnloadTexture(renderer.characterTexture);
     UnloadFont(renderer.logoFont);
 }
 
@@ -316,7 +317,7 @@ void drawWinScreen(const Renderer &renderer, int finalScore)
     
     DrawRectangleRounded((Rectangle){panelRect.x - 5, panelRect.y - 5, panelRect.width + 10, panelRect.height + 10}, 0.1f, 10, CC_TEXT_GOLD); // Dark Pink
     
-    DrawRectangleRounded(panelRect, 0.1f, 10, LITE_PURPLE); // Beige/White
+    DrawRectangleRounded(panelRect, 0.1f, 10, LITE_PURPLE); 
 
     
     const char title[] = "YOU WIN!";
@@ -334,7 +335,7 @@ void drawWinScreen(const Renderer &renderer, int finalScore)
     
     DrawTexturePro(renderer.buttonTexture, renderer.winPanelRect[SCORE_BAR], {panelRect.x + panelRect.width / 2 - 205, panelRect.y + 320, 320, 50}, {0, 0}, 0.0f, WHITE);
 
-    DrawText(TextFormat("%i", 15000), panelRect.x +200, panelRect.y + 330, 32, WHITE);
+    DrawText(TextFormat("%i", finalScore), panelRect.x +200, panelRect.y + 330, 32, WHITE);
 
     for(int i = 0; i < MAX_WIN_BUTTONS; i++) {
         drawButton(renderer, renderer.winButtons[i]);
@@ -373,5 +374,4 @@ void drawLoseScreen(const Renderer &renderer)
     for(int i = 0; i < MAX_LOSE_BUTTONS; i++) {
         drawButton(renderer, renderer.loseButtons[i]);
     }
-
 }

@@ -44,16 +44,35 @@ struct Game
     int movesLeft;
     float fallSpeed;
     float swapSpeed;
-    bool isGameOver;
     bool isCloseRequested;
     int previousMusicTrack;
     SelectedCandy selection;
     swappedCandies swappedcandies;
 };
 
+/**
+ * @brief handles the game closure
+ * @param currentGame the current game
+ */
 void handleGameClosure(Game &currentGame);
+
+/**
+ * @brief handles the on click function
+ * @param action the button action
+ * @param currentGame the current game
+ */
 void handleOnClickFunction(ButtonAction action, Game &currentGame);
+
+/**
+ * @brief initializes the game
+ * @returns the initialized game
+ */
 Game initializeGame();
+
+/**
+ * @brief draws the game
+ * @param currentGame the current game
+ */
 void drawGame(Game &currentGame);
 
 #endif

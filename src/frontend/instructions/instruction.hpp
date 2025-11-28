@@ -3,6 +3,12 @@
 
 #include "raylib.h"
 
-int DrawInstructionPopup(Font font,int previousPage);
+/**
+ * @brief draws the instruction popup
+ * @param font the font
+ * @param previousPage the previous page
+ * @returns the next page
+ */
+int DrawInstructionPopup(Font font, int previousPage);
 
 #endif
