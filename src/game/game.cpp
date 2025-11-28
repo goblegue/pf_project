@@ -20,6 +20,24 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
         currentGame.movesLeft = 20;
         currentGame.currentState = INPUT;
         currentGame.currentPage = IN_GAME;
+        switch (currentGame.settings.difficultyMode)
+        {
+        case 0:
+            currentGame.targetScore = 5000;
+            break;
+        case 1:
+            currentGame.targetScore = 10000;
+            break;
+        case 2:
+            currentGame.targetScore = 15000;
+            break;
+        case 3:
+            currentGame.targetScore = 20000;
+            break;
+        default:
+            currentGame.targetScore = 10000;
+            break;
+        }
         break;
 
     case ACTION_LOAD_GAME:
