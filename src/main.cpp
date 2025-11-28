@@ -28,177 +28,18 @@ int main()
 
     // --- Setup ---
     Game currentGame = initializeGame();
-    
-    SelectedCandy selection{};                                                         // To track selected candy
-    swappedCandies swappedcandies{};                                                   // To track swapped candies
 
     playMusic(currentGame.currentAudio);
     // --- Main Game Loop ---
     while (!WindowShouldClose())
     {
-        fallSpeed = (currentGame.settings.animationSpeed) * 50.0f;
-        updateAudioStream(currentGame.currentAudio);
-        if (currentGame.settings.isMusicOn == 0)
+        BeginDrawing();
+        ClearBackground(CC_BG_DARK);
+        drawGame(currentGame);
+        EndDrawing();
+        if (currentGame.isCloseRequested)
         {
-            pauseMusic(currentGame.currentAudio);
-        }
-        else if (currentGame.settings.isMusicOn == 1)
-        {
-            playMusic(currentGame.currentAudio);
-        }
-
-        changeVolume(currentGame.currentAudio, currentGame.settings.Volume);
-
-        if (currentGame.currentPage == MAIN_MENU)
-        {
-            // Draw Menu
-            BeginDrawing();
-            ClearBackground(CC_BG_DARK);
-            drawMenu(currentGame.renderer);
-
-            // handle button clicks
-            for (int i = 0; i < MAX_MENU_BUTTONS; ++i)
-            {
-                if (isButtonPressed(currentGame.renderer.menuButtons[i]))
-                {
-                    handleOnClickFunction(currentGame.renderer.menuButtons[i].action, currentGame);
-                }
-            }
-            EndDrawing();
-            if (currentGame.isCloseRequested)
-            {
-                break;
-            }
-        }
-        else if (currentGame.currentPage == SETTINGS)
-        {
-            BeginDrawing();
-            ClearBackground(CC_BG_DARK);
-            int nextPage = drawSettingsPage(currentGame.settings, currentGame.renderer,currentGame.previousPage);
-            if (nextPage != SETTINGS)
-            {
-                currentGame.currentPage = (GamePage)nextPage;
-            }
-            EndDrawing();
-        }
-        else if (currentGame.currentPage == INSTRUCTION_PAGE)
-        {
-            BeginDrawing();
-            ClearBackground(CC_BG_DARK);
-            
-            currentGame.currentPage = static_cast<GamePage>(DrawInstructionPopup(currentGame.renderer.logoFont,currentGame.previousPage));
-            // back to main menu button
-
-            EndDrawing();
-        }
-        else if (currentGame.currentPage == IN_GAME)
-        {
-            // --- Update ---
-            float currAniSpeed = fallSpeed;
-
-            if (currentGame.currentState == SWAPPING || currentGame.currentState == REVERSING)
-            {
-                currAniSpeed = SWAP_SPEED;
-            }
-
-            bool isMoving = animatBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE, currAniSpeed);
-
-            switch (currentGame.currentState)
-            {
-            case INPUT:
-                if (!isMoving)
-                {
-                    if (handleMouseInput(selection, currentGame.renderer.gridOffset, TILE_SIZE))
-                    {
-                        swappedcandies = getSwappedCandies();
-                        swapCandies(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-                        currentGame.currentState = SWAPPING;
-                    }
-                }
-                break;
-            case SWAPPING:
-                if (!isMoving)
-                {
-                    if (handleSpecialInteraction(currentGame.gameBoard, swappedcandies))
-                    {
-                        currentGame.currentState = PROCESSING_MATCHES;
-                    }
-#ifndef Testing
-                    else if (isPartOfMatch(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column) || isPartOfMatch(currentGame.gameBoard, swappedcandies.candy2row, swappedcandies.candy2column))
-                    {
-                        currentGame.movesLeft--;
-                        currentGame.currentState = PROCESSING_MATCHES;
-                    }
-#endif
-
-#ifdef Testing
-                    else if (true) // Always true for testing purposes
-                    {
-                        currentGame.currentState = PROCESSING_MATCHES;
-                    }
-#endif
-                    else
-                    {
-                        swapCandies(currentGame.gameBoard, swappedcandies.candy1row, swappedcandies.candy1column, swappedcandies.candy2row, swappedcandies.candy2column);
-                        currentGame.currentState = REVERSING;
-                    }
-                }
-                break;
-            case REVERSING:
-                if (!isMoving)
-                {
-                    currentGame.currentState = INPUT;
-                }
-                break;
-            case PROCESSING_MATCHES:
-            {
-                bool deletedPresent = isDeletedPresent(currentGame.gameBoard);
-                bool matchFound = findAndMarkFiveMatches(currentGame.gameBoard, swappedcandies) || findAndMarkFourMatches(currentGame.gameBoard, swappedcandies) || findAndMarkLorTshapeMatches(currentGame.gameBoard) || findAndMarkThreeMatches(currentGame.gameBoard);
-                if (matchFound || deletedPresent)
-                {
-                    currentGame.score += getScoreFromMarkedCandies(currentGame.gameBoard);
-                    applyGravity(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
-                    refillBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
-                    currentGame.currentState = ANIMATING_FALL;
-                }
-                else
-                {
-                    saveBoardToFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt");
-                    currentGame.currentState = INPUT;
-                }
-                break;
-            }
-            case ANIMATING_FALL:
-            {
-
-                if (!isMoving)
-                {
-                    currentGame.currentState = PROCESSING_MATCHES;
-                }
-                break;
-            }
-            default:
-
-                break;
-            }
-
-            // Drawing
-            BeginDrawing();
-            ClearBackground(CC_BG_DARK);
-            // handle button clicks
-            for (int i = 0; i < MAX_IN_GAME_BUTTONS; ++i)
-            {
-                if (isButtonPressed(currentGame.renderer.gameButtons[i]))
-                {
-                    handleOnClickFunction(currentGame.renderer.gameButtons[i].action, currentGame);
-                }
-            }
-            drawGameScreen(currentGame.renderer, currentGame.gameBoard, selection, currentGame.score, currentGame.movesLeft, currentGame.targetScore);
-            EndDrawing();
-            if (currentGame.isCloseRequested)
-            {
-                break;
-            }
+            break;
         }
     }
 

@@ -8,7 +8,6 @@
 #include "../audio/audio.hpp"
 #include "../frontend/settings/settings.hpp"
 
-
 enum GameState
 {
     INPUT,
@@ -45,11 +44,13 @@ struct Game
     float swapSpeed;
     bool isGameOver;
     bool isCloseRequested;
-
+    SelectedCandy selection;
+    swappedCandies swappedcandies;
 };
 
 void handleGameClosure(Game &currentGame);
 void handleOnClickFunction(ButtonAction action, Game &currentGame);
 Game initializeGame();
+void drawGame(Game &currentGame);
 
 #endif

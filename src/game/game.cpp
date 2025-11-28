@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "../db/fileHandler.hpp"
+#include "../frontend/instructions/instruction.hpp"
 
 void handleGameClosure(Game &currentGame)
 {
@@ -59,7 +60,7 @@ Game initializeGame()
     newGame.introAudio = initAudio("assets/music/candy_crush_intro2.mp3", newGame.settings.Volume);
     newGame.fallSpeed = 300.0f;
     newGame.swapSpeed = 300.0f;
-    newGame.targetScore= 10000;
+    newGame.targetScore = 10000;
     newGame.currentState = INPUT;
     newGame.currentPage = MAIN_MENU;
     newGame.previousPage = MAIN_MENU;
@@ -72,4 +73,147 @@ Game initializeGame()
     return newGame;
 }
 
+void drawGame(Game &currentGame)
+{
+    currentGame.fallSpeed = (currentGame.settings.animationSpeed) * 50.0f;
+    updateAudioStream(currentGame.currentAudio);
+    if (currentGame.settings.isMusicOn == 0)
+    {
+        pauseMusic(currentGame.currentAudio);
+    }
+    else if (currentGame.settings.isMusicOn == 1)
+    {
+        playMusic(currentGame.currentAudio);
+    }
 
+    changeVolume(currentGame.currentAudio, currentGame.settings.Volume);
+
+    if (currentGame.currentPage == MAIN_MENU)
+    {
+        // Draw Menu
+        drawMenu(currentGame.renderer);
+
+        // handle button clicks
+        for (int i = 0; i < MAX_MENU_BUTTONS; ++i)
+        {
+            if (isButtonPressed(currentGame.renderer.menuButtons[i]))
+            {
+                handleOnClickFunction(currentGame.renderer.menuButtons[i].action, currentGame);
+            }
+        }
+    }
+    else if (currentGame.currentPage == SETTINGS)
+    {
+        int nextPage = drawSettingsPage(currentGame.settings, currentGame.renderer, currentGame.previousPage);
+        if (nextPage != SETTINGS)
+        {
+            currentGame.currentPage = (GamePage)nextPage;
+        }
+    }
+    else if (currentGame.currentPage == INSTRUCTION_PAGE)
+    {
+        currentGame.currentPage = static_cast<GamePage>(DrawInstructionPopup(currentGame.renderer.logoFont, currentGame.previousPage));
+    }
+    else if (currentGame.currentPage == IN_GAME)
+    {
+        // --- Update ---
+        float currAniSpeed = currentGame.fallSpeed;
+
+        if (currentGame.currentState == SWAPPING || currentGame.currentState == REVERSING)
+        {
+            currAniSpeed = currentGame.swapSpeed;
+        }
+
+        bool isMoving = animatBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE, currAniSpeed);
+
+        switch (currentGame.currentState)
+        {
+        case INPUT:
+            if (!isMoving)
+            {
+                if (handleMouseInput(currentGame.selection, currentGame.renderer.gridOffset, TILE_SIZE))
+                {
+                    currentGame.swappedcandies = getSwappedCandies();
+                    swapCandies(currentGame.gameBoard, currentGame.swappedcandies.candy1row, currentGame.swappedcandies.candy1column, currentGame.swappedcandies.candy2row, currentGame.swappedcandies.candy2column);
+                    currentGame.currentState = SWAPPING;
+                }
+            }
+            break;
+        case SWAPPING:
+            if (!isMoving)
+            {
+                if (handleSpecialInteraction(currentGame.gameBoard, currentGame.swappedcandies))
+                {
+                    currentGame.currentState = PROCESSING_MATCHES;
+                }
+#ifndef Testing
+                else if (isPartOfMatch(currentGame.gameBoard, currentGame.swappedcandies.candy1row, currentGame.swappedcandies.candy1column) || isPartOfMatch(currentGame.gameBoard, currentGame.swappedcandies.candy2row, currentGame.swappedcandies.candy2column))
+                {
+                    currentGame.movesLeft--;
+                    currentGame.currentState = PROCESSING_MATCHES;
+                }
+#endif
+
+#ifdef Testing
+                else if (true) // Always true for testing purposes
+                {
+                    currentGame.currentState = PROCESSING_MATCHES;
+                }
+#endif
+                else
+                {
+                    swapCandies(currentGame.gameBoard, currentGame.swappedcandies.candy1row, currentGame.swappedcandies.candy1column, currentGame.swappedcandies.candy2row, currentGame.swappedcandies.candy2column);
+                    currentGame.currentState = REVERSING;
+                }
+            }
+            break;
+        case REVERSING:
+            if (!isMoving)
+            {
+                currentGame.currentState = INPUT;
+            }
+            break;
+        case PROCESSING_MATCHES:
+        {
+            bool deletedPresent = isDeletedPresent(currentGame.gameBoard);
+            bool matchFound = findAndMarkFiveMatches(currentGame.gameBoard, currentGame.swappedcandies) || findAndMarkFourMatches(currentGame.gameBoard, currentGame.swappedcandies) || findAndMarkLorTshapeMatches(currentGame.gameBoard) || findAndMarkThreeMatches(currentGame.gameBoard);
+            if (matchFound || deletedPresent)
+            {
+                currentGame.score += getScoreFromMarkedCandies(currentGame.gameBoard);
+                applyGravity(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
+                refillBoard(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE);
+                currentGame.currentState = ANIMATING_FALL;
+            }
+            else
+            {
+                saveBoardToFile(currentGame.gameBoard, currentGame.targetScore, currentGame.score, currentGame.movesLeft, "savefile.txt");
+                currentGame.currentState = INPUT;
+            }
+            break;
+        }
+        case ANIMATING_FALL:
+        {
+
+            if (!isMoving)
+            {
+                currentGame.currentState = PROCESSING_MATCHES;
+            }
+            break;
+        }
+        default:
+
+            break;
+        }
+
+        // Drawing
+        // handle button clicks
+        for (int i = 0; i < MAX_IN_GAME_BUTTONS; ++i)
+        {
+            if (isButtonPressed(currentGame.renderer.gameButtons[i]))
+            {
+                handleOnClickFunction(currentGame.renderer.gameButtons[i].action, currentGame);
+            }
+        }
+        drawGameScreen(currentGame.renderer, currentGame.gameBoard, currentGame.selection, currentGame.score, currentGame.movesLeft, currentGame.targetScore);
+    }
+}
