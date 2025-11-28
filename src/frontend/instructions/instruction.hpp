@@ -3,6 +3,6 @@
 
 #include "raylib.h"
 
-void DrawInstructionPopup(Font font, int screenWidth, int screenHeight);
+int DrawInstructionPopup(Font font,int previousPage);
 
 #endif

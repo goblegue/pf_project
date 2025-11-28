@@ -4,6 +4,7 @@
 
 #include "../../colors/candyCrushPalette.hpp"
 #include "../../colors/customColourPalette.hpp"
+#include "../../utils/CharUtils.hpp"
 
 
 
@@ -21,7 +22,7 @@ GameSettings initGameSettings(char stylePath[])
     return settings;
 }
 
-int drawSettingsPage(GameSettings &settings, Renderer &renderer)
+int drawSettingsPage(GameSettings &settings, Renderer &renderer,int previousPage)
 {
 
     const int windowWidth{GetScreenWidth()},
@@ -56,10 +57,16 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer)
     GuiSliderBar({panelX+panelWidth-175, toggleSliderY + 2*elementSpacingY+92, 140, 30}, "", "", &settings.animationSpeed, 1, 10);
     DrawTextEx(renderer.logoFont, TextFormat("%i", (int)(settings.animationSpeed * 50)), (Vector2){panelX+panelWidth-200, toggleSliderY + 2*elementSpacingY+97}, renderer.logoFont.baseSize, 1.2, fontColor); 
 
-    // Back to Menu Button
-    if (GuiButton({panelX + panelWidth/2 - 100, panelY + panelHeight - 100, 200, 50}, "BACK TO MENU"))
+    // Back Button
+
+    char backButtonLabel[20]= "BACK TO MENU";
+    if(previousPage == 1){
+        charAssignment(backButtonLabel,"BACK TO GAME");
+    }
+
+    if (GuiButton({panelX + panelWidth/2 - 100, panelY + panelHeight - 100, 200, 50}, backButtonLabel))
     {
-        return 0; // MAIN_MENU
+        return previousPage; // MAIN_MENU
     }
 
     // Instruction page Button
@@ -74,12 +81,11 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer)
     if(GuiDropdownBox({panelX+panelWidth -175, toggleSliderY + 4*elementSpacingY+170, 140, 35}, musicOptions, &settings.musicTrack, settings.dropDownEditModeTrack)){
         settings.dropDownEditModeTrack = !settings.dropDownEditModeTrack;
     }
-    const char options[] = "Easy;Normal;Hard";
+    const char options[] = "CAKEWALK;STANDARD;NIGHTMARE;CRACKHEAD";
     DrawTextEx(renderer.logoFont,"Difficulty", (Vector2){panelX + 50, toggleSliderY + 3*elementSpacingY+125}, renderer.logoFont.baseSize*2.2, 1, fontColor);
     if(GuiDropdownBox({panelX+panelWidth -175, toggleSliderY + 3*elementSpacingY+130, 140, 35}, options, &settings.difficultyMode, settings.dropDownEditModeDifficulty)){
         settings.dropDownEditModeDifficulty = !settings.dropDownEditModeDifficulty;
     }
-
 
 
 

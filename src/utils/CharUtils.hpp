@@ -14,4 +14,13 @@ inline void charToString(const char c,char str[2]){
     str[1] = '\0';
 }
 
+inline void charAssignment(char dest[], const char src[]){
+    int i = 0;
+    while (src[i] != '\0'){
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
+}
+
 #endif 

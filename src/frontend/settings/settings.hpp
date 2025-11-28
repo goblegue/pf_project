@@ -15,7 +15,7 @@ struct GameSettings {
 };
 
 
-int drawSettingsPage(GameSettings &settings, Renderer &renderer);
+int drawSettingsPage(GameSettings &settings, Renderer &renderer,int previousPage);
 
 GameSettings initGameSettings(char stylePath[]);
 
