@@ -54,3 +54,9 @@ void unloadAudio(Audio &gameAudio)
     UnloadMusicStream(gameAudio.music);
 }
 
+void switchAudio(Audio &currentAudio, Audio &newAudio)
+{
+    pauseMusic(currentAudio);
+    currentAudio = newAudio;
+    playMusic(currentAudio);
+}

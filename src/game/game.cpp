@@ -38,6 +38,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
             currentGame.targetScore = 10000;
             break;
         }
+        switchAudio(currentGame.currentAudio, currentGame.gameAudio);
         break;
 
     case ACTION_LOAD_GAME:
@@ -46,6 +47,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
         {
             currentGame.currentState = INPUT;
             currentGame.currentPage = IN_GAME;
+            // switchAudio(currentGame.currentAudio, currentGame.gameAudio);
         }
         else
         {
@@ -59,6 +61,7 @@ void handleOnClickFunction(ButtonAction action, Game &currentGame)
 
     case ACTION_BACK_TO_MAIN_MENU:
         currentGame.currentPage = MAIN_MENU;
+        switchAudio(currentGame.currentAudio, currentGame.introAudio);
         break;
     case ACTION_SETTINGS:
         currentGame.previousPage = currentGame.currentPage;
@@ -75,7 +78,9 @@ Game initializeGame()
     newGame.renderer = initRenderer();
     newGame.gameBoard = initializeGrid(newGame.renderer.gridOffset, TILE_SIZE);
     newGame.settings = initGameSettings("assets/styles/style_lavanda.rgs");
-    newGame.introAudio = initAudio("assets/music/candy_crush_intro2.mp3", newGame.settings.Volume);
+    newGame.introAudio = initAudio("assets/music/candy_crush_intro2.ogg", newGame.settings.Volume);
+    newGame.outroAudio = initAudio("assets/music/candy_crush_outro1.ogg", newGame.settings.Volume);
+    newGame.gameAudio = initAudio("assets/music/candy_crush_loop5.ogg", newGame.settings.Volume);
     newGame.fallSpeed = 300.0f;
     newGame.swapSpeed = 300.0f;
     newGame.targetScore = 10000;

@@ -14,7 +14,7 @@ GameSettings initGameSettings(char stylePath[])
     settings.animationSpeed = 5.0f;
     settings.Volume = 0.5f;
     settings.difficultyMode = 1;
-    settings.musicTrack = 0;
+    settings.gameMusicTrack = 0;
     settings.dropDownEditModeDifficulty = false;
     settings.dropDownEditModeTrack = false;
     return settings;
@@ -74,7 +74,7 @@ int drawSettingsPage(GameSettings &settings, Renderer &renderer, int previousPag
     // difficulty and music track dropdown Box (
     const char musicOptions[] = "Track 1;Track 2;Track 3;Track 4;Track 5";
     DrawTextEx(renderer.logoFont, "Music Track", (Vector2){panelX + 50, toggleSliderY + 4 * elementSpacingY + 165}, renderer.logoFont.baseSize * 2.2, 1, fontColor);
-    if (GuiDropdownBox({panelX + panelWidth - 175, toggleSliderY + 4 * elementSpacingY + 170, 140, 35}, musicOptions, &settings.musicTrack, settings.dropDownEditModeTrack))
+    if (GuiDropdownBox({panelX + panelWidth - 175, toggleSliderY + 4 * elementSpacingY + 170, 140, 35}, musicOptions, &settings.gameMusicTrack, settings.dropDownEditModeTrack))
     {
         settings.dropDownEditModeTrack = !settings.dropDownEditModeTrack;
     }

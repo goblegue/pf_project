@@ -9,7 +9,7 @@ struct GameSettings {
     float animationSpeed;
     float Volume;
     int difficultyMode;
-    int musicTrack;
+    int gameMusicTrack;
     bool dropDownEditModeDifficulty;
     bool dropDownEditModeTrack;
 };

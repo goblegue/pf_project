@@ -15,3 +15,4 @@ void pauseMusic(Audio &gameAudio);
 void changeVolume(Audio &gameAudio, float newVolume);
 void unloadAudio(Audio &gameAudio);
 void updateAudioStream(Audio &gameAudio);
+void switchAudio(Audio &currentAudio, Audio &newAudio);
