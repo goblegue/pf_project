@@ -23,8 +23,9 @@ void printMarkedDeletions(const Board &gameBoard)
 }
 #endif
 // points associated with each candy color
-void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize)
+Board initializeGrid(Vector2 gridOffset, const int tileSize)
 {
+    Board gameBoard {};
     Candy newCandy{};
 
     for (int i{0}; i < MAX_ROWS; i++)
@@ -45,6 +46,7 @@ void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize)
             gameBoard.candyGrid[i][j] = newCandy;
         }
     }
+    return gameBoard;
 }
 
 // Helper to calculate where a candy SHOULD be based on the grid

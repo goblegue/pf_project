@@ -41,7 +41,7 @@ struct Board
 
 const int candypoints[5]{30, 30, 40, 50, 60};
 
-void initializeGrid(Board &gameBoard, Vector2 gridOffset, const int tileSize);
+Board initializeGrid(Vector2 gridOffset, const int tileSize);
 
 bool animatBoard(Board &gameBoard, Vector2 gridOffset, const int tileSize, float speed);
 

@@ -1,12 +1,14 @@
 #include "audio.hpp"
 
-void initAudio(Audio &gameAudio, const char musicFilePath[], float initialVolume)
+Audio initAudio(const char musicFilePath[], float initialVolume)
 {
+    Audio gameAudio{};
     gameAudio.music = LoadMusicStream(musicFilePath);
     gameAudio.music.looping = true;
     gameAudio.volume = initialVolume;
     gameAudio.isPlaying = false;
     SetMusicVolume(gameAudio.music, gameAudio.volume);
+    return gameAudio;
 }
 
 void changeMusic(Audio &gameAudio, const char musicFilePath[])

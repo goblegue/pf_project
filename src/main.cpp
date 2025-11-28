@@ -27,34 +27,27 @@ int main()
     SetTargetFPS(60);
 
     // --- Setup ---
-    Game currentGame{};
-    currentGame.renderer = initRenderer();                                             // Initialize graphics
-    initializeGrid(currentGame.gameBoard, currentGame.renderer.gridOffset, TILE_SIZE); // Initialize game logic
-    initAudio(currentGame.gameAudio, "assets/music/candy_crush_intro2.mp3", volume);   // Initialize audio
-    currentGame.settings = initGameSettings("assets/styles/style_lavanda.rgs");        // Initialize settings UI style
+    Game currentGame = initializeGame();
+    
     SelectedCandy selection{};                                                         // To track selected candy
     swappedCandies swappedcandies{};                                                   // To track swapped candies
-    currentGame.targetScore = 50000;
-    currentGame.movesLeft = totalMoves;
-    currentGame.currentState = INPUT;
-    currentGame.currentPage = MAIN_MENU;
 
-    playMusic(currentGame.gameAudio);
+    playMusic(currentGame.currentAudio);
     // --- Main Game Loop ---
     while (!WindowShouldClose())
     {
         fallSpeed = (currentGame.settings.animationSpeed) * 50.0f;
-        updateAudioStream(currentGame.gameAudio);
+        updateAudioStream(currentGame.currentAudio);
         if (currentGame.settings.isMusicOn == 0)
         {
-            pauseMusic(currentGame.gameAudio);
+            pauseMusic(currentGame.currentAudio);
         }
         else if (currentGame.settings.isMusicOn == 1)
         {
-            playMusic(currentGame.gameAudio);
+            playMusic(currentGame.currentAudio);
         }
 
-        changeVolume(currentGame.gameAudio, currentGame.settings.Volume);
+        changeVolume(currentGame.currentAudio, currentGame.settings.Volume);
 
         if (currentGame.currentPage == MAIN_MENU)
         {

@@ -30,7 +30,10 @@ struct Game
 {
     Board gameBoard;
     Audio gameAudio;
+    Audio outroAudio;
+    Audio introAudio;
     Renderer renderer;
+    Audio currentAudio;
     GameState currentState;
     GamePage currentPage;
     GamePage previousPage;
@@ -38,11 +41,15 @@ struct Game
     int targetScore;
     int score;
     int movesLeft;
+    float fallSpeed;
+    float swapSpeed;
     bool isGameOver;
     bool isCloseRequested;
+
 };
 
 void handleGameClosure(Game &currentGame);
 void handleOnClickFunction(ButtonAction action, Game &currentGame);
+Game initializeGame();
 
 #endif
