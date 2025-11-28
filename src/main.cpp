@@ -100,7 +100,7 @@ int main()
 
     const float SWAP_SPEED = 300.0f;
 #ifndef Testing
-     float FALL_SPEED ;
+     float fallSpeed = 300.0f;
 #endif
 #ifdef Testing
      float fallSpeed = 150.0f;
